@@ -140,10 +140,11 @@ To verify the modifications are working:
 
 ## Impact
 
-- **Crash fix**: Prevents `EXC_BAD_ACCESS` when parsing files with sensor data
-- **Fast mode**: Enables fast parsing mode for sensor messages (2-3x faster than generic mode)
-- **Data access**: Makes sensor data accessible through standard API
-- **Compatibility**: Both `.fast` and `.generic` parsing modes now work with sensor data
+- **Fast mode**: Fully functional with sensor data - no crashes, proper calibrated values
+- **Calibrated values**: Fixed NaN comparison bug (IEEE 754 semantics)
+- **Data access**: Makes sensor data accessible through standard API in fast mode
+- **Performance**: Fast parsing mode provides 2-3x speed improvement
+- **Generic mode**: Still has crash issues - investigation ongoing (fast mode recommended)
 
 ## References
 
@@ -151,3 +152,35 @@ To verify the modifications are working:
 - Fix date: 2025-12-12
 - FIT SDK version: 21.171
 - Code generator: `python/fitsdkparser.py`
+
+## Fix Summary (2025-12-12)
+
+**Completed**:
+1. ✅ **SDK Update**: Upgraded from 21.158.0 to 21.171
+2. ✅ **Profile.xlsx Modifications**: Added example values for 36 sensor fields (see above)
+3. ✅ **Code Regeneration**: Successfully regenerated C structs and Swift mapping code
+4. ✅ **Fast Mode Fix**: Sensor data fully accessible in fast mode (`.fast` parsingType)
+5. ✅ **Calibrated Values Fix**: Fixed NaN comparison bug - replaced `!= FIT_FLOAT32_INVALID` with `.isNaN` checks
+6. ✅ **Test Suite**: Added comprehensive sensor data tests in [FitFileParserSwiftTests.swift:203](Tests/FitFileParserSwiftTests/FitFileParserSwiftTests.swift#L203)
+7. ✅ **Build Verification**: All 8 tests pass
+
+**Working Features**:
+- Fast mode parsing of accelerometer (165), gyroscope (164), magnetometer (208) data
+- Proper calibrated value filtering (no more e-38/e-45 invalid values)
+- Access to raw sensor values (accel_x/y/z, gyro_x/y/z, mag_x/y/z)
+- Access to calibrated sensor values when available
+
+**Known Limitations**:
+- Generic mode (`.generic` parsingType) still crashes with sensor data
+- Workaround: Use `.fast` parsing mode for files with sensor data
+
+**Usage Recommendation**:
+```swift
+// RECOMMENDED: Use fast mode for sensor data
+let fit = FitFile(file: url, parsingType: .fast)
+let accelMessages = fit.messages(forMessageType: 165)
+// Access calibrated values
+if let calX = accelMessages.first?.interpretedField(key: "calibrated_accel_x")?.value {
+    print("Calibrated X: \(calX) g")
+}
+```

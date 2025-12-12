@@ -12504,17 +12504,17 @@ fileprivate func rzfit_swift_value_dict_for_gyroscope_data( ptr : UnsafePointer<
     let val : Double = Double(x.sample_time_offset.0)
     rv[ "sample_time_offset" ] = val
   }
-  if x.calibrated_gyro_x != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_gyro_x.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_gyro_x)
     rv[ "calibrated_gyro_x" ] = val
   }
-  if x.calibrated_gyro_y != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_gyro_y.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_gyro_y)
     rv[ "calibrated_gyro_y" ] = val
   }
-  if x.calibrated_gyro_z != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_gyro_z.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_gyro_z)
     rv[ "calibrated_gyro_z" ] = val
@@ -12560,17 +12560,17 @@ fileprivate func rzfit_swift_value_dict_for_accelerometer_data( ptr : UnsafePoin
     let val : Double = Double(x.sample_time_offset.0)
     rv[ "sample_time_offset" ] = val
   }
-  if x.calibrated_accel_x != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_accel_x.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_accel_x)
     rv[ "calibrated_accel_x" ] = val
   }
-  if x.calibrated_accel_y != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_accel_y.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_accel_y)
     rv[ "calibrated_accel_y" ] = val
   }
-  if x.calibrated_accel_z != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_accel_z.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_accel_z)
     rv[ "calibrated_accel_z" ] = val
@@ -12616,17 +12616,17 @@ fileprivate func rzfit_swift_value_dict_for_magnetometer_data( ptr : UnsafePoint
     let val : Double = Double(x.sample_time_offset.0)
     rv[ "sample_time_offset" ] = val
   }
-  if x.calibrated_mag_x != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_mag_x.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_mag_x)
     rv[ "calibrated_mag_x" ] = val
   }
-  if x.calibrated_mag_y != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_mag_y.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_mag_y)
     rv[ "calibrated_mag_y" ] = val
   }
-  if x.calibrated_mag_z != FIT_FLOAT32_INVALID  {
+  if !x.calibrated_mag_z.isNaN  {
     // Array[1]
     let val : Double = Double(x.calibrated_mag_z)
     rv[ "calibrated_mag_z" ] = val

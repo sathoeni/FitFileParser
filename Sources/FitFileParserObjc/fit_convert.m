@@ -330,6 +330,13 @@ void Fit_InitRawMesg(FIT_CONVERT_STATE *state){
 
             if (state->mesg_index < FIT_LOCAL_MESGS)
             {
+                   // Add NULL check to protect both fast and generic modes
+                   // If no message definition available, skip field processing entirely
+                   if (state->mesg_def == FIT_NULL) {
+                       state->decode_state = FIT_CONVERT_DECODE_FIELD_DEF_SIZE;
+                       break;
+                   }
+
                    if( state->raw_mesg){
                        state->field_num = datum;
                        state->convert_table[state->mesg_index].fields[state->convert_table[state->mesg_index].num_fields].num = state->field_num;
