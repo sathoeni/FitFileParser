@@ -19,6 +19,7 @@ typedef FIT_UINT16 FIT_MESG_NUM;
 #define FIT_MESG_NUM_POWER_ZONE                     ((FIT_MESG_NUM)9)     
 #define FIT_MESG_NUM_MET_ZONE                       ((FIT_MESG_NUM)10)    
 #define FIT_MESG_NUM_SPORT                          ((FIT_MESG_NUM)12)    
+#define FIT_MESG_NUM_TRAINING_SETTINGS              ((FIT_MESG_NUM)13)    
 #define FIT_MESG_NUM_GOAL                           ((FIT_MESG_NUM)15)    
 #define FIT_MESG_NUM_SESSION                        ((FIT_MESG_NUM)18)    
 #define FIT_MESG_NUM_LAP                            ((FIT_MESG_NUM)19)    
@@ -370,6 +371,12 @@ typedef struct {
   FIT_UINT8 high_bpm; // 
   FIT_UINT8 fat_calories; // 
 } FIT_MET_ZONE_MESG;
+
+typedef struct {
+  FIT_UINT32 target_distance; // 
+  FIT_UINT32 target_time; // 
+  FIT_UINT16 target_speed; // 
+} FIT_TRAINING_SETTINGS_MESG;
 
 typedef struct {
   FIT_STRING name[16]; // 

@@ -502,6 +502,25 @@ typedef struct {
   FIT_UINT16 global_mesg_num;
   FIT_UINT8 num_fields;
   FIT_UINT8 fields[FIT_FIELD_DEF_SIZE *  3];
+} FIT_TRAINING_SETTINGS_MESG_DEF;
+
+static const FIT_TRAINING_SETTINGS_MESG_DEF training_settings_mesg_def = {
+  0, // reserved_1
+  FIT_ARCH_ENDIAN, // arch,
+  /* training_settings */13, // mesg_num,
+  3,
+  {
+    /* target_distance */31, (sizeof(FIT_UINT32)*1), FIT_BASE_TYPE_UINT32,  
+    /* target_time */33,     (sizeof(FIT_UINT32)*1), FIT_BASE_TYPE_UINT32,  
+    /* target_speed */32,    (sizeof(FIT_UINT16)*1), FIT_BASE_TYPE_UINT16,  
+  }
+};
+typedef struct {
+  FIT_UINT8 reserved_1;
+  FIT_UINT8 arch;
+  FIT_UINT16 global_mesg_num;
+  FIT_UINT8 num_fields;
+  FIT_UINT8 fields[FIT_FIELD_DEF_SIZE *  3];
 } FIT_DIVE_SETTINGS_MESG_DEF;
 
 static const FIT_DIVE_SETTINGS_MESG_DEF dive_settings_mesg_def = {
@@ -1833,7 +1852,7 @@ static const FIT_HRV_MESG_DEF hrv_mesg_def = {
     /* time */0, (sizeof(FIT_UINT16)*1), FIT_BASE_TYPE_UINT16,
   }
 };
-FIT_UINT8 reference_mesg_defs_size = 66;
+FIT_UINT8 reference_mesg_defs_size = 67;
 FIT_CONST_MESG_DEF_PTR reference_mesg_defs[] = {
   (FIT_CONST_MESG_DEF_PTR) &file_id_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &file_creator_mesg_def,
@@ -1856,6 +1875,7 @@ FIT_CONST_MESG_DEF_PTR reference_mesg_defs[] = {
   (FIT_CONST_MESG_DEF_PTR) &cadence_zone_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &power_zone_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &met_zone_mesg_def,
+  (FIT_CONST_MESG_DEF_PTR) &training_settings_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &dive_settings_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &goal_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &activity_mesg_def,

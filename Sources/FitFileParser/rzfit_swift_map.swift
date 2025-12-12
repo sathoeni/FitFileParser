@@ -3,7 +3,7 @@
 import FitFileParserObjc
 
 extension FitFile {
-  public static let sdkVersion = "21.158.0"
+  public static let sdkVersion = "21.171.0"
 }
 
 //MARK: - Module Entry Point Functions
@@ -94,6 +94,13 @@ func rzfit_swift_build_mesg(mesg_num : FIT_MESG_NUM, uptr : UnsafePointer<UInt8>
                        mesg_values: rzfit_swift_value_dict_for_sport(ptr: $0),
                        mesg_enums:  rzfit_swift_string_dict_for_sport(ptr: $0),
                        mesg_dates:  rzfit_swift_date_dict_for_sport(ptr: $0))
+      }
+    case 13: // training_settings
+      uptr.withMemoryRebound(to: FIT_TRAINING_SETTINGS_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    13,
+                       mesg_values: rzfit_swift_value_dict_for_training_settings(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_training_settings(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_training_settings(ptr: $0))
       }
     case 15: // goal
       uptr.withMemoryRebound(to: FIT_GOAL_MESG.self, capacity: 1) {
@@ -617,6 +624,10 @@ func rzfit_swift_unit_for_field( mesg_num : FIT_UINT16, field : String ) -> Stri
       default: return nil
      }
    case "fat_calories": return "kcal / min"
+   case "target_distance": return "m"
+   case "target_speed": return "m/s"
+   case "target_time": return "s"
+   case "precise_target_speed": return "m/s"
    case "gf_low": return "percent"
    case "gf_high": return "percent"
    case "water_density": return "kg/m^3"
@@ -1240,30 +1251,48 @@ func rzfit_swift_string_for_type(fit_type : FIT_UINT8, val : FIT_UINT32 ) -> Str
      case 153: return rzfit_swift_string_from_sit_up_exercise_name( FIT_UINT16(val) )
      case 154: return rzfit_swift_string_from_squat_exercise_name( FIT_UINT16(val) )
      case 155: return rzfit_swift_string_from_total_body_exercise_name( FIT_UINT16(val) )
-     case 156: return rzfit_swift_string_from_triceps_extension_exercise_name( FIT_UINT16(val) )
-     case 157: return rzfit_swift_string_from_warm_up_exercise_name( FIT_UINT16(val) )
-     case 158: return rzfit_swift_string_from_run_exercise_name( FIT_UINT16(val) )
-     case 159: return rzfit_swift_string_from_water_type( FIT_ENUM(val) )
-     case 160: return rzfit_swift_string_from_tissue_model_type( FIT_ENUM(val) )
-     case 161: return rzfit_swift_string_from_dive_gas_status( FIT_ENUM(val) )
-     case 162: return rzfit_swift_string_from_dive_alert( FIT_ENUM(val) )
-     case 163: return rzfit_swift_string_from_dive_alarm_type( FIT_ENUM(val) )
-     case 164: return rzfit_swift_string_from_dive_backlight_mode( FIT_ENUM(val) )
-     case 165: return rzfit_swift_string_from_sleep_level( FIT_ENUM(val) )
-     case 166: return rzfit_swift_string_from_spo2_measurement_type( FIT_ENUM(val) )
-     case 167: return rzfit_swift_string_from_ccr_setpoint_switch_mode( FIT_ENUM(val) )
-     case 168: return rzfit_swift_string_from_dive_gas_mode( FIT_ENUM(val) )
-     case 169: return rzfit_swift_string_from_projectile_type( FIT_ENUM(val) )
-     case 170: return rzfit_swift_string_from_favero_product( FIT_UINT16(val) )
-     case 171: return rzfit_swift_string_from_split_type( FIT_ENUM(val) )
-     case 172: return rzfit_swift_string_from_climb_pro_event( FIT_ENUM(val) )
-     case 173: return rzfit_swift_string_from_gas_consumption_rate_type( FIT_ENUM(val) )
-     case 174: return rzfit_swift_string_from_tap_sensitivity( FIT_ENUM(val) )
-     case 175: return rzfit_swift_string_from_radar_threat_level_type( FIT_ENUM(val) )
-     case 176: return rzfit_swift_string_from_max_met_speed_source( FIT_ENUM(val) )
-     case 177: return rzfit_swift_string_from_max_met_heart_rate_source( FIT_ENUM(val) )
-     case 178: return rzfit_swift_string_from_hrv_status( FIT_ENUM(val) )
-     case 179: return rzfit_swift_string_from_no_fly_time_mode( FIT_ENUM(val) )
+     case 156: return rzfit_swift_string_from_move_exercise_name( FIT_UINT16(val) )
+     case 157: return rzfit_swift_string_from_pose_exercise_name( FIT_UINT16(val) )
+     case 158: return rzfit_swift_string_from_triceps_extension_exercise_name( FIT_UINT16(val) )
+     case 159: return rzfit_swift_string_from_warm_up_exercise_name( FIT_UINT16(val) )
+     case 160: return rzfit_swift_string_from_run_exercise_name( FIT_UINT16(val) )
+     case 161: return rzfit_swift_string_from_bike_exercise_name( FIT_UINT16(val) )
+     case 162: return rzfit_swift_string_from_banded_exercises_exercise_name( FIT_UINT16(val) )
+     case 163: return rzfit_swift_string_from_battle_rope_exercise_name( FIT_UINT16(val) )
+     case 164: return rzfit_swift_string_from_elliptical_exercise_name( FIT_UINT16(val) )
+     case 165: return rzfit_swift_string_from_floor_climb_exercise_name( FIT_UINT16(val) )
+     case 166: return rzfit_swift_string_from_indoor_bike_exercise_name( FIT_UINT16(val) )
+     case 167: return rzfit_swift_string_from_indoor_row_exercise_name( FIT_UINT16(val) )
+     case 168: return rzfit_swift_string_from_ladder_exercise_name( FIT_UINT16(val) )
+     case 169: return rzfit_swift_string_from_sandbag_exercise_name( FIT_UINT16(val) )
+     case 170: return rzfit_swift_string_from_sled_exercise_name( FIT_UINT16(val) )
+     case 171: return rzfit_swift_string_from_sledge_hammer_exercise_name( FIT_UINT16(val) )
+     case 172: return rzfit_swift_string_from_stair_stepper_exercise_name( FIT_UINT16(val) )
+     case 173: return rzfit_swift_string_from_suspension_exercise_name( FIT_UINT16(val) )
+     case 174: return rzfit_swift_string_from_tire_exercise_name( FIT_UINT16(val) )
+     case 175: return rzfit_swift_string_from_bike_outdoor_exercise_name( FIT_UINT16(val) )
+     case 176: return rzfit_swift_string_from_run_indoor_exercise_name( FIT_UINT16(val) )
+     case 177: return rzfit_swift_string_from_water_type( FIT_ENUM(val) )
+     case 178: return rzfit_swift_string_from_tissue_model_type( FIT_ENUM(val) )
+     case 179: return rzfit_swift_string_from_dive_gas_status( FIT_ENUM(val) )
+     case 180: return rzfit_swift_string_from_dive_alert( FIT_ENUM(val) )
+     case 181: return rzfit_swift_string_from_dive_alarm_type( FIT_ENUM(val) )
+     case 182: return rzfit_swift_string_from_dive_backlight_mode( FIT_ENUM(val) )
+     case 183: return rzfit_swift_string_from_sleep_level( FIT_ENUM(val) )
+     case 184: return rzfit_swift_string_from_spo2_measurement_type( FIT_ENUM(val) )
+     case 185: return rzfit_swift_string_from_ccr_setpoint_switch_mode( FIT_ENUM(val) )
+     case 186: return rzfit_swift_string_from_dive_gas_mode( FIT_ENUM(val) )
+     case 187: return rzfit_swift_string_from_projectile_type( FIT_ENUM(val) )
+     case 188: return rzfit_swift_string_from_favero_product( FIT_UINT16(val) )
+     case 189: return rzfit_swift_string_from_split_type( FIT_ENUM(val) )
+     case 190: return rzfit_swift_string_from_climb_pro_event( FIT_ENUM(val) )
+     case 191: return rzfit_swift_string_from_gas_consumption_rate_type( FIT_ENUM(val) )
+     case 192: return rzfit_swift_string_from_tap_sensitivity( FIT_ENUM(val) )
+     case 193: return rzfit_swift_string_from_radar_threat_level_type( FIT_ENUM(val) )
+     case 194: return rzfit_swift_string_from_max_met_speed_source( FIT_ENUM(val) )
+     case 195: return rzfit_swift_string_from_max_met_heart_rate_source( FIT_ENUM(val) )
+     case 196: return rzfit_swift_string_from_hrv_status( FIT_ENUM(val) )
+     case 197: return rzfit_swift_string_from_no_fly_time_mode( FIT_ENUM(val) )
     default: return "fit_type_\(fit_type)_\(val)"
   }
 }
@@ -1282,6 +1311,7 @@ public func rzfit_swift_string_to_mesg_num(_ input : String) -> FIT_UINT16
     case "power_zone": return 9;
     case "met_zone": return 10;
     case "sport": return 12;
+    case "training_settings": return 13;
     case "goal": return 15;
     case "session": return 18;
     case "lap": return 19;
@@ -1411,6 +1441,7 @@ public func rzfit_swift_string_from_mesg_num(_ input : FIT_UINT16) -> String
     case 9: return "power_zone"
     case 10: return "met_zone"
     case 12: return "sport"
+    case 13: return "training_settings"
     case 15: return "goal"
     case 18: return "session"
     case 19: return "lap"
@@ -1543,6 +1574,7 @@ public extension FitMessageType {
   static let power_zone : FitMessageType = 9
   static let met_zone : FitMessageType = 10
   static let sport : FitMessageType = 12
+  static let training_settings : FitMessageType = 13
   static let goal : FitMessageType = 15
   static let session : FitMessageType = 18
   static let lap : FitMessageType = 19
@@ -2935,6 +2967,7 @@ fileprivate func rzfit_swift_string_from_manufacturer(_ input : FIT_UINT16) -> S
     case 150: return "myzone"
     case 151: return "abawo"
     case 152: return "bafang"
+    case 153: return "luhong_technology"
     case 255: return "development"
     case 257: return "healthandlife"
     case 258: return "lezyne"
@@ -3012,6 +3045,9 @@ fileprivate func rzfit_swift_string_from_manufacturer(_ input : FIT_UINT16) -> S
     case 330: return "eo_swimbetter"
     case 331: return "mywhoosh"
     case 332: return "ravemen"
+    case 333: return "tektro_racing_products"
+    case 334: return "darad_innovation_corporation"
+    case 335: return "cycloptim"
     case 5759: return "actigraphcorp"
     default: return "manufacturer_\(input)"
   }
@@ -3259,6 +3295,8 @@ fileprivate func rzfit_swift_string_from_garmin_product(_ input : FIT_UINT16) ->
     case 3028: return "gpsmap66"
     case 3049: return "approach_s10"
     case 3066: return "vivoactive3m_l"
+    case 3076: return "fr245"
+    case 3077: return "fr245_music"
     case 3085: return "approach_g80"
     case 3092: return "edge_130_asia"
     case 3095: return "edge_1030_bontrager"
@@ -3289,6 +3327,7 @@ fileprivate func rzfit_swift_string_from_garmin_product(_ input : FIT_UINT16) ->
     case 3250: return "marq_expedition"
     case 3251: return "marq_athlete"
     case 3258: return "descent_mk2"
+    case 3282: return "fr45"
     case 3284: return "gpsmap66i"
     case 3287: return "fenix6S_sport"
     case 3288: return "fenix6S"
@@ -3338,6 +3377,8 @@ fileprivate func rzfit_swift_string_from_garmin_product(_ input : FIT_UINT16) ->
     case 3570: return "edge_1030_plus"
     case 3578: return "rally_200"
     case 3589: return "fr745"
+    case 3596: return "venusq_music"
+    case 3599: return "venusq_music_v2"
     case 3600: return "venusq"
     case 3615: return "lily"
     case 3624: return "marq_adventurer"
@@ -3365,6 +3406,7 @@ fileprivate func rzfit_swift_string_from_garmin_product(_ input : FIT_UINT16) ->
     case 3865: return "gnss"
     case 3869: return "fr55"
     case 3888: return "instinct_2"
+    case 3889: return "instinct_2s"
     case 3905: return "fenix7s"
     case 3906: return "fenix7"
     case 3907: return "fenix7x"
@@ -3450,7 +3492,20 @@ fileprivate func rzfit_swift_string_from_garmin_product(_ input : FIT_UINT16) ->
     case 4536: return "fenix8"
     case 4556: return "d2_mach1_pro"
     case 4575: return "enduro3"
+    case 4583: return "instinctE_40mm"
+    case 4584: return "instinctE_45mm"
+    case 4585: return "instinct3_solar_45mm"
+    case 4586: return "instinct3_amoled_45mm"
+    case 4587: return "instinct3_amoled_50mm"
+    case 4588: return "descent_g2"
+    case 4606: return "hrm_200"
+    case 4625: return "vivoactive6"
+    case 4647: return "approachS44"
+    case 4656: return "approachS50"
     case 4666: return "fenix_e"
+    case 4759: return "instinct3_solar_50mm"
+    case 4775: return "tactix8_amoled"
+    case 4776: return "tactix8_solar"
     case 10007: return "sdm4"
     case 10014: return "edge_remote"
     case 20533: return "tacx_training_app_win"
@@ -3642,6 +3697,8 @@ fileprivate func rzfit_swift_string_from_swim_stroke(_ input : FIT_ENUM) -> Stri
     case 4: return "drill"
     case 5: return "mixed"
     case 6: return "im"
+    case 7: return "im_by_round"
+    case 8: return "rimo"
     default: return "swim_stroke_\(input)"
   }
 }
@@ -4716,6 +4773,25 @@ fileprivate func rzfit_swift_string_from_exercise_category(_ input : FIT_UINT16)
     case 30: return "triceps_extension"
     case 31: return "warm_up"
     case 32: return "run"
+    case 33: return "bike"
+    case 34: return "cardio_sensors"
+    case 35: return "move"
+    case 36: return "pose"
+    case 37: return "banded_exercises"
+    case 38: return "battle_rope"
+    case 39: return "elliptical"
+    case 40: return "floor_climb"
+    case 41: return "indoor_bike"
+    case 42: return "indoor_row"
+    case 43: return "ladder"
+    case 44: return "sandbag"
+    case 45: return "sled"
+    case 46: return "sledge_hammer"
+    case 47: return "stair_stepper"
+    case 49: return "suspension"
+    case 50: return "tire"
+    case 52: return "run_indoor"
+    case 53: return "bike_outdoor"
     case 65534: return "unknown"
     default: return "exercise_category_\(input)"
   }
@@ -4808,6 +4884,27 @@ fileprivate func rzfit_swift_string_from_cardio_exercise_name(_ input : FIT_UINT
     case 19: return "weighted_squat_jacks"
     case 20: return "triple_under"
     case 21: return "weighted_triple_under"
+    case 22: return "elliptical"
+    case 23: return "spinning"
+    case 24: return "pole_paddle_forward_wheelchair"
+    case 25: return "pole_paddle_backward_wheelchair"
+    case 26: return "pole_handcycle_forward_wheelchair"
+    case 27: return "pole_handcycle_backward_wheelchair"
+    case 28: return "pole_rainbow_wheelchair"
+    case 29: return "double_punch_forward_wheelchair"
+    case 30: return "double_punch_down_wheelchair"
+    case 31: return "double_punch_sideways_wheelchair"
+    case 32: return "double_punch_up_wheelchair"
+    case 33: return "sit_ski_wheelchair"
+    case 34: return "sitting_jacks_wheelchair"
+    case 35: return "punch_forward_wheelchair"
+    case 36: return "punch_down_wheelchair"
+    case 37: return "punch_sideways_wheelchair"
+    case 38: return "punch_up_wheelchair"
+    case 39: return "punch_bag_wheelchair"
+    case 40: return "pole_dd_ff_uu_wheelchair"
+    case 41: return "butterfly_arms_wheelchair"
+    case 42: return "punch"
     default: return "cardio_exercise_name_\(input)"
   }
 }
@@ -4820,6 +4917,10 @@ fileprivate func rzfit_swift_string_from_carry_exercise_name(_ input : FIT_UINT1
     case 2: return "farmers_walk_on_toes"
     case 3: return "hex_dumbbell_hold"
     case 4: return "overhead_carry"
+    case 5: return "dumbbell_waiter_carry"
+    case 6: return "farmers_carry_walk_lunge"
+    case 7: return "farmers_carry"
+    case 8: return "farmers_carry_on_toes"
     default: return "carry_exercise_name_\(input)"
   }
 }
@@ -4930,6 +5031,27 @@ fileprivate func rzfit_swift_string_from_core_exercise_name(_ input : FIT_UINT16
     case 70: return "swimming"
     case 71: return "teaser"
     case 72: return "the_hundred"
+    case 73: return "bicep_curl_with_leg_extension_with_weights"
+    case 75: return "hanging_l_sit"
+    case 77: return "lower_lift_with_weights"
+    case 79: return "ring_l_sit"
+    case 80: return "rowing_1_with_weights"
+    case 81: return "rowing_2_with_weights"
+    case 82: return "scissors_with_weights"
+    case 83: return "single_leg_stretch_with_weights"
+    case 84: return "toes_to_elbows"
+    case 85: return "weighted_criss_cross"
+    case 86: return "weighted_double_leg_stretch"
+    case 87: return "weighted_the_hundred"
+    case 88: return "l_sit"
+    case 89: return "turkish_get_up"
+    case 90: return "weighted_ring_l_sit"
+    case 91: return "weighted_hanging_l_sit"
+    case 92: return "weighted_l_sit"
+    case 93: return "side_bend_low_wheelchair"
+    case 94: return "side_bend_mid_wheelchair"
+    case 95: return "side_bend_high_wheelchair"
+    case 96: return "seated_side_bend"
     default: return "core_exercise_name_\(input)"
   }
 }
@@ -5022,6 +5144,7 @@ fileprivate func rzfit_swift_string_from_crunch_exercise_name(_ input : FIT_UINT
     case 82: return "weighted_toes_to_bar"
     case 83: return "crunch"
     case 84: return "straight_leg_crunch_with_ball"
+    case 86: return "leg_climb_crunch"
     default: return "crunch_exercise_name_\(input)"
   }
 }
@@ -5073,6 +5196,13 @@ fileprivate func rzfit_swift_string_from_curl_exercise_name(_ input : FIT_UINT16
     case 41: return "swiss_ball_ez_bar_preacher_curl"
     case 42: return "twisting_standing_dumbbell_biceps_curl"
     case 43: return "wide_grip_ez_bar_biceps_curl"
+    case 44: return "one_arm_concentration_curl"
+    case 45: return "standing_zottman_biceps_curl"
+    case 46: return "dumbbell_biceps_curl"
+    case 47: return "drag_curl_wheelchair"
+    case 48: return "dumbbell_biceps_curl_wheelchair"
+    case 49: return "bottle_curl"
+    case 50: return "seated_bottle_curl"
     default: return "curl_exercise_name_\(input)"
   }
 }
@@ -5099,6 +5229,11 @@ fileprivate func rzfit_swift_string_from_deadlift_exercise_name(_ input : FIT_UI
     case 16: return "sumo_deadlift_high_pull"
     case 17: return "trap_bar_deadlift"
     case 18: return "wide_grip_barbell_deadlift"
+    case 20: return "kettlebell_deadlift"
+    case 21: return "kettlebell_sumo_deadlift"
+    case 23: return "romanian_deadlift"
+    case 24: return "single_leg_romanian_deadlift_circuit"
+    case 25: return "straight_leg_deadlift"
     default: return "deadlift_exercise_name_\(input)"
   }
 }
@@ -5116,6 +5251,9 @@ fileprivate func rzfit_swift_string_from_flye_exercise_name(_ input : FIT_UINT16
     case 7: return "swiss_ball_dumbbell_flye"
     case 8: return "arm_rotations"
     case 9: return "hug_a_tree"
+    case 10: return "face_down_incline_reverse_flye"
+    case 11: return "incline_reverse_flye"
+    case 12: return "rear_delt_fly_wheelchair"
     default: return "flye_exercise_name_\(input)"
   }
 }
@@ -5214,6 +5352,7 @@ fileprivate func rzfit_swift_string_from_hip_stability_exercise_name(_ input : F
     case 31: return "weighted_standing_rear_leg_raise"
     case 32: return "supine_hip_internal_rotation"
     case 33: return "weighted_supine_hip_internal_rotation"
+    case 34: return "lying_abduction_stretch"
     default: return "hip_stability_exercise_name_\(input)"
   }
 }
@@ -5224,6 +5363,7 @@ fileprivate func rzfit_swift_string_from_hip_swing_exercise_name(_ input : FIT_U
     case 0: return "single_arm_kettlebell_swing"
     case 1: return "single_arm_dumbbell_swing"
     case 2: return "step_out_swing"
+    case 3: return "one_arm_swing"
     default: return "hip_swing_exercise_name_\(input)"
   }
 }
@@ -5312,6 +5452,13 @@ fileprivate func rzfit_swift_string_from_lateral_raise_exercise_name(_ input : F
     case 31: return "weighted_wall_slide"
     case 32: return "arm_circles"
     case 33: return "shaving_the_head"
+    case 34: return "dumbbell_lateral_raise"
+    case 36: return "ring_dip_kipping"
+    case 37: return "wall_walk"
+    case 38: return "dumbbell_front_raise_wheelchair"
+    case 39: return "dumbbell_lateral_raise_wheelchair"
+    case 40: return "pole_double_arm_overhead_and_forward_wheelchair"
+    case 41: return "pole_straight_arm_overhead_wheelchair"
     default: return "lateral_raise_exercise_name_\(input)"
   }
 }
@@ -5331,6 +5478,8 @@ fileprivate func rzfit_swift_string_from_leg_curl_exercise_name(_ input : FIT_UI
     case 9: return "staggered_stance_good_morning"
     case 10: return "swiss_ball_hip_raise_and_leg_curl"
     case 11: return "zercher_good_morning"
+    case 12: return "band_good_morning"
+    case 13: return "bar_good_morning"
     default: return "leg_curl_exercise_name_\(input)"
   }
 }
@@ -5448,6 +5597,16 @@ fileprivate func rzfit_swift_string_from_lunge_exercise_name(_ input : FIT_UINT1
     case 78: return "walking_lunge"
     case 79: return "weighted_walking_lunge"
     case 80: return "wide_grip_overhead_barbell_split_squat"
+    case 81: return "alternating_dumbbell_lunge"
+    case 82: return "dumbbell_reverse_lunge"
+    case 83: return "overhead_dumbbell_lunge"
+    case 84: return "scissor_power_switch"
+    case 85: return "dumbbell_overhead_walking_lunge"
+    case 86: return "curtsy_lunge"
+    case 87: return "weighted_curtsy_lunge"
+    case 88: return "weighted_shifting_side_lunge"
+    case 89: return "weighted_side_lunge_and_press"
+    case 90: return "weighted_side_lunge_jump_off"
     default: return "lunge_exercise_name_\(input)"
   }
 }
@@ -5476,6 +5635,14 @@ fileprivate func rzfit_swift_string_from_olympic_lift_exercise_name(_ input : FI
     case 18: return "single_arm_kettlebell_snatch"
     case 19: return "split_jerk"
     case 20: return "squat_clean_and_jerk"
+    case 21: return "dumbbell_hang_snatch"
+    case 22: return "dumbbell_power_clean_and_jerk"
+    case 23: return "dumbbell_power_clean_and_push_press"
+    case 24: return "dumbbell_power_clean_and_strict_press"
+    case 25: return "dumbbell_snatch"
+    case 26: return "medicine_ball_clean"
+    case 27: return "clean_and_press"
+    case 28: return "snatch"
     default: return "olympic_lift_exercise_name_\(input)"
   }
 }
@@ -5618,6 +5785,7 @@ fileprivate func rzfit_swift_string_from_plank_exercise_name(_ input : FIT_UINT1
     case 132: return "plank_with_arm_variations"
     case 133: return "plank_with_leg_lift"
     case 134: return "reverse_plank_with_leg_pull"
+    case 135: return "ring_plank_sprawls"
     default: return "plank_exercise_name_\(input)"
   }
 }
@@ -5658,6 +5826,11 @@ fileprivate func rzfit_swift_string_from_plyo_exercise_name(_ input : FIT_UINT16
     case 30: return "weighted_squat_jump_onto_box"
     case 31: return "squat_jumps_in_and_out"
     case 32: return "weighted_squat_jumps_in_and_out"
+    case 33: return "box_jump"
+    case 34: return "box_jump_overs"
+    case 35: return "box_jump_overs_over_the_box"
+    case 36: return "star_jump_squats"
+    case 37: return "jump_squat"
     default: return "plyo_exercise_name_\(input)"
   }
 }
@@ -5704,6 +5877,13 @@ fileprivate func rzfit_swift_string_from_pull_up_exercise_name(_ input : FIT_UIN
     case 36: return "suspended_chin_up"
     case 37: return "weighted_suspended_chin_up"
     case 38: return "pull_up"
+    case 39: return "chin_up"
+    case 40: return "neutral_grip_chin_up"
+    case 41: return "weighted_chin_up"
+    case 42: return "band_assisted_pull_up"
+    case 43: return "neutral_grip_pull_up"
+    case 44: return "weighted_neutral_grip_chin_up"
+    case 45: return "weighted_neutral_grip_pull_up"
     default: return "pull_up_exercise_name_\(input)"
   }
 }
@@ -5790,6 +5970,18 @@ fileprivate func rzfit_swift_string_from_push_up_exercise_name(_ input : FIT_UIN
     case 76: return "weighted_ring_push_up"
     case 77: return "push_up"
     case 78: return "pilates_pushup"
+    case 79: return "dynamic_push_up"
+    case 80: return "kipping_handstand_push_up"
+    case 81: return "shoulder_tapping_push_up"
+    case 82: return "biceps_push_up"
+    case 83: return "hindu_push_up"
+    case 84: return "pike_push_up"
+    case 85: return "wide_grip_push_up"
+    case 86: return "weighted_biceps_push_up"
+    case 87: return "weighted_hindu_push_up"
+    case 88: return "weighted_pike_push_up"
+    case 89: return "kipping_parallette_handstand_push_up"
+    case 90: return "wall_push_up"
     default: return "push_up_exercise_name_\(input)"
   }
 }
@@ -5831,6 +6023,25 @@ fileprivate func rzfit_swift_string_from_row_exercise_name(_ input : FIT_UINT16)
     case 31: return "underhand_grip_cable_row"
     case 32: return "v_grip_cable_row"
     case 33: return "wide_grip_seated_cable_row"
+    case 34: return "alternating_dumbbell_row"
+    case 35: return "inverted_row"
+    case 36: return "row"
+    case 37: return "weighted_row"
+    case 38: return "indoor_row"
+    case 39: return "banded_face_pulls"
+    case 40: return "chest_supported_dumbbell_row"
+    case 41: return "decline_ring_row"
+    case 42: return "elevated_ring_row"
+    case 43: return "rdl_bent_over_row_with_barbell_dumbbell"
+    case 44: return "ring_row"
+    case 45: return "barbell_row"
+    case 46: return "bent_over_row_with_barbell"
+    case 47: return "bent_over_row_with_dumbell"
+    case 48: return "seated_underhand_grip_cable_row"
+    case 49: return "trx_inverted_row"
+    case 50: return "weighted_inverted_row"
+    case 51: return "weighted_trx_inverted_row"
+    case 52: return "dumbbell_row_wheelchair"
     default: return "row_exercise_name_\(input)"
   }
 }
@@ -5862,6 +6073,13 @@ fileprivate func rzfit_swift_string_from_shoulder_press_exercise_name(_ input : 
     case 21: return "split_stance_hammer_curl_to_press"
     case 22: return "swiss_ball_dumbbell_shoulder_press"
     case 23: return "weight_plate_front_raise"
+    case 24: return "dumbbell_shoulder_press"
+    case 25: return "military_press"
+    case 27: return "strict_press"
+    case 28: return "dumbbell_front_raise"
+    case 29: return "dumbbell_curl_to_overhead_press_wheelchair"
+    case 30: return "arnold_press_wheelchair"
+    case 31: return "overhead_dumbbell_press_wheelchair"
     default: return "shoulder_press_exercise_name_\(input)"
   }
 }
@@ -5902,6 +6120,9 @@ fileprivate func rzfit_swift_string_from_shoulder_stability_exercise_name(_ inpu
     case 30: return "weighted_swiss_ball_w_raise"
     case 31: return "swiss_ball_y_raise"
     case 32: return "weighted_swiss_ball_y_raise"
+    case 33: return "cable_internal_rotation"
+    case 34: return "lying_internal_rotation"
+    case 35: return "seated_dumbbell_internal_rotation"
     default: return "shoulder_stability_exercise_name_\(input)"
   }
 }
@@ -5926,6 +6147,14 @@ fileprivate func rzfit_swift_string_from_shrug_exercise_name(_ input : FIT_UINT1
     case 14: return "serratus_shrug"
     case 15: return "weighted_serratus_shrug"
     case 16: return "wide_grip_jump_shrug"
+    case 17: return "wide_grip_barbell_shrug"
+    case 18: return "behind_the_back_shrug"
+    case 19: return "dumbbell_shrug_wheelchair"
+    case 20: return "shrug_wheelchair"
+    case 21: return "shrug_arm_down_wheelchair"
+    case 22: return "shrug_arm_mid_wheelchair"
+    case 23: return "shrug_arm_up_wheelchair"
+    case 24: return "upright_row"
     default: return "shrug_exercise_name_\(input)"
   }
 }
@@ -5971,6 +6200,9 @@ fileprivate func rzfit_swift_string_from_sit_up_exercise_name(_ input : FIT_UINT
     case 35: return "x_abs"
     case 36: return "weighted_x_abs"
     case 37: return "sit_up"
+    case 38: return "ghd_sit_ups"
+    case 39: return "sit_up_turkish_get_up"
+    case 40: return "russian_twist_on_swiss_ball"
     default: return "sit_up_exercise_name_\(input)"
   }
 }
@@ -6070,6 +6302,15 @@ fileprivate func rzfit_swift_string_from_squat_exercise_name(_ input : FIT_UINT1
     case 89: return "squat_jumps_in_n_out"
     case 90: return "pilates_plie_squats_parallel_turned_out_flat_and_heels"
     case 91: return "releve_straight_leg_and_knee_bent_with_one_leg_variation"
+    case 92: return "alternating_box_dumbbell_step_ups"
+    case 93: return "dumbbell_overhead_squat_single_arm"
+    case 94: return "dumbbell_squat_snatch"
+    case 95: return "medicine_ball_squat"
+    case 97: return "wall_ball_squat_and_press"
+    case 98: return "squat_american_swing"
+    case 100: return "air_squat"
+    case 101: return "dumbbell_thrusters"
+    case 102: return "overhead_barbell_squat"
     default: return "squat_exercise_name_\(input)"
   }
 }
@@ -6090,7 +6331,229 @@ fileprivate func rzfit_swift_string_from_total_body_exercise_name(_ input : FIT_
     case 10: return "weighted_squat_plank_push_up"
     case 11: return "standing_t_rotation_balance"
     case 12: return "weighted_standing_t_rotation_balance"
+    case 13: return "barbell_burpee"
+    case 15: return "burpee_box_jump_over_yes_literally_jumping_over_the_box"
+    case 16: return "burpee_box_jump_step_up_over"
+    case 17: return "lateral_barbell_burpee"
+    case 18: return "total_body_burpee_over_bar"
+    case 19: return "burpee_box_jump_over"
+    case 20: return "burpee_wheelchair"
     default: return "total_body_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_move_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "arch_and_curl"
+    case 1: return "arm_circles_with_ball_band_and_weight"
+    case 2: return "arm_stretch"
+    case 3: return "back_massage"
+    case 4: return "belly_breathing"
+    case 5: return "bridge_with_ball"
+    case 6: return "diamond_leg_crunch"
+    case 7: return "diamond_leg_lift"
+    case 8: return "eight_point_shoulder_opener"
+    case 9: return "foot_rolling"
+    case 10: return "footwork"
+    case 11: return "footwork_on_disc"
+    case 12: return "forward_fold"
+    case 13: return "frog_with_band"
+    case 14: return "half_roll_up"
+    case 15: return "hamstring_curl"
+    case 16: return "hamstring_stretch"
+    case 17: return "hip_stretch"
+    case 18: return "hug_a_tree_with_ball_band_and_weight"
+    case 19: return "knee_circles"
+    case 20: return "knee_folds_on_disc"
+    case 21: return "lateral_flexion"
+    case 22: return "leg_stretch_with_band"
+    case 23: return "leg_stretch_with_leg_circles"
+    case 24: return "lower_lift_on_disc"
+    case 25: return "lunge_squat"
+    case 26: return "lunges_with_knee_lift"
+    case 27: return "mermaid_stretch"
+    case 28: return "neutral_pelvic_position"
+    case 29: return "pelvic_clocks_on_disc"
+    case 30: return "pilates_plie_squats_parallel_turned_out_flat_and_heels_with_chair"
+    case 31: return "piriformis_stretch"
+    case 32: return "plank_knee_crosses"
+    case 33: return "plank_knee_pulls"
+    case 34: return "plank_up_downs"
+    case 35: return "prayer_mudra"
+    case 36: return "psoas_lunge_stretch"
+    case 37: return "ribcage_breathing"
+    case 38: return "roll_down"
+    case 39: return "roll_up_with_weight_and_band"
+    case 40: return "saw"
+    case 41: return "scapular_stabilization"
+    case 42: return "scissors_on_disc"
+    case 43: return "seated_hip_stretchup"
+    case 44: return "seated_twist"
+    case 45: return "shaving_the_head_with_ball_band_and_weight"
+    case 46: return "spinal_twist"
+    case 47: return "spinal_twist_stretch"
+    case 48: return "spine_stretch_forward"
+    case 49: return "squat_open_arm_twist_pose"
+    case 50: return "squats_with_ball"
+    case 51: return "stand_and_hang"
+    case 52: return "standing_side_stretch"
+    case 53: return "standing_single_leg_forward_bend_with_it_band_opener"
+    case 54: return "straight_leg_crunch_with_leg_lift"
+    case 55: return "straight_leg_crunch_with_leg_lift_with_ball"
+    case 56: return "straight_leg_crunch_with_legs_crossed"
+    case 57: return "straight_leg_crunch_with_legs_crossed_with_ball"
+    case 58: return "straight_leg_diagonal_crunch"
+    case 59: return "straight_leg_diagonal_crunch_with_ball"
+    case 60: return "tailbone_curl"
+    case 61: return "throat_lock"
+    case 62: return "tick_tock_side_roll"
+    case 63: return "twist"
+    case 64: return "v_leg_crunches"
+    case 65: return "v_sit"
+    case 66: return "forward_fold_wheelchair"
+    case 67: return "forward_fold_plus_wheelchair"
+    case 68: return "arm_circles_low_forward_wheelchair"
+    case 69: return "arm_circles_mid_forward_wheelchair"
+    case 70: return "arm_circles_high_forward_wheelchair"
+    case 71: return "arm_circles_low_backward_wheelchair"
+    case 72: return "arm_circles_mid_backward_wheelchair"
+    case 73: return "arm_circles_high_backward_wheelchair"
+    case 74: return "core_twists_wheelchair"
+    case 75: return "arm_raise_wheelchair"
+    case 76: return "chest_expand_wheelchair"
+    case 77: return "arm_extend_wheelchair"
+    case 78: return "forward_bend_wheelchair"
+    case 79: return "toe_touch_wheelchair"
+    case 80: return "extended_toe_touch_wheelchair"
+    case 81: return "seated_arm_circles"
+    case 82: return "trunk_rotations"
+    case 83: return "seated_trunk_rotations"
+    case 84: return "toe_touch"
+    default: return "move_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_pose_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "all_fours"
+    case 1: return "ankle_to_knee"
+    case 2: return "baby_cobra"
+    case 3: return "boat"
+    case 4: return "bound_angle"
+    case 5: return "bound_seated_single_leg_forward_bend"
+    case 6: return "bow"
+    case 7: return "bowed_half_moon"
+    case 8: return "bridge"
+    case 9: return "cat"
+    case 10: return "chair"
+    case 11: return "childs"
+    case 12: return "corpse"
+    case 13: return "cow_face"
+    case 14: return "cow"
+    case 15: return "devotional_warrior"
+    case 16: return "dolphin_plank"
+    case 17: return "dolphin"
+    case 18: return "down_dog_knee_to_nose"
+    case 19: return "down_dog_split"
+    case 20: return "down_dog_split_open_hip_bent_knee"
+    case 21: return "downward_facing_dog"
+    case 22: return "eagle"
+    case 23: return "easy_seated"
+    case 24: return "extended_puppy"
+    case 25: return "extended_side_angle"
+    case 26: return "fish"
+    case 27: return "four_limbed_staff"
+    case 28: return "full_split"
+    case 29: return "gate"
+    case 30: return "half_chair_half_ankle_to_knee"
+    case 31: return "half_moon"
+    case 32: return "head_to_knee"
+    case 33: return "heron"
+    case 34: return "heros"
+    case 35: return "high_lunge"
+    case 36: return "knees_chest_chin"
+    case 37: return "lizard"
+    case 38: return "locust"
+    case 39: return "low_lunge"
+    case 40: return "low_lunge_twist"
+    case 41: return "low_lunge_with_knee_down"
+    case 42: return "mermaid"
+    case 43: return "mountain"
+    case 44: return "one_legged_downward_facing_pose_open_hip_bent_knee"
+    case 45: return "one_legged_pigeon"
+    case 46: return "peaceful_warrior"
+    case 47: return "plank"
+    case 48: return "plow"
+    case 49: return "reclined_hand_to_foot"
+    case 50: return "revolved_half_moon"
+    case 51: return "revolved_head_to_knee"
+    case 52: return "revolved_triangle"
+    case 53: return "runners_lunge"
+    case 54: return "seated_easy_side_bend"
+    case 55: return "seated_easy_twist"
+    case 56: return "seated_long_leg_forward_bend"
+    case 57: return "seated_wide_leg_forward_bend"
+    case 58: return "shoulder_stand"
+    case 59: return "side_boat"
+    case 60: return "side_plank"
+    case 61: return "sphinx"
+    case 62: return "squat_open_arm_twist"
+    case 63: return "squat_palm_press"
+    case 64: return "staff"
+    case 65: return "standing_arms_up"
+    case 66: return "standing_forward_bend_halfway_up"
+    case 67: return "standing_forward_bend"
+    case 68: return "standing_side_opener"
+    case 69: return "standing_single_leg_forward_bend"
+    case 70: return "standing_split"
+    case 71: return "standing_wide_leg_forward_bend"
+    case 72: return "standing_wide_leg_forward_bend_with_twist"
+    case 73: return "supine_spinal_twist"
+    case 74: return "table_top"
+    case 75: return "thread_the_needle"
+    case 76: return "thunderbolt"
+    case 77: return "thunderbolt_pose_both_sides_arm_stretch"
+    case 78: return "tree"
+    case 79: return "triangle"
+    case 80: return "up_dog"
+    case 81: return "upward_facing_plank"
+    case 82: return "warrior_one"
+    case 83: return "warrior_three"
+    case 84: return "warrior_two"
+    case 85: return "wheel"
+    case 86: return "wide_side_lunge"
+    case 87: return "deep_breathing_wheelchair"
+    case 88: return "deep_breathing_low_wheelchair"
+    case 89: return "deep_breathing_mid_wheelchair"
+    case 90: return "deep_breathing_high_wheelchair"
+    case 91: return "prayer_wheelchair"
+    case 92: return "overhead_prayer_wheelchair"
+    case 93: return "cactus_wheelchair"
+    case 94: return "breathing_punches_wheelchair"
+    case 95: return "breathing_punches_extended_wheelchair"
+    case 96: return "breathing_punches_overhead_wheelchair"
+    case 97: return "breathing_punches_overhead_and_down_wheelchair"
+    case 98: return "breathing_punches_side_wheelchair"
+    case 99: return "breathing_punches_extended_side_wheelchair"
+    case 100: return "breathing_punches_overhead_side_wheelchair"
+    case 101: return "breathing_punches_overhead_and_down_side_wheelchair"
+    case 102: return "left_hand_back_wheelchair"
+    case 103: return "triangle_wheelchair"
+    case 104: return "thread_the_needle_wheelchair"
+    case 105: return "neck_flexion_and_extension_wheelchair"
+    case 106: return "neck_lateral_flexion_wheelchair"
+    case 107: return "spine_flexion_and_extension_wheelchair"
+    case 108: return "spine_rotation_wheelchair"
+    case 109: return "spine_lateral_flexion_wheelchair"
+    case 110: return "alternative_skiing_wheelchair"
+    case 111: return "reach_forward_wheelchair"
+    case 112: return "warrior_wheelchair"
+    case 113: return "reverse_warrior_wheelchair"
+    case 114: return "downward_facing_dog_to_cobra"
+    case 115: return "seated_cat_cow"
+    default: return "pose_exercise_name_\(input)"
   }
 }
 
@@ -6138,6 +6601,10 @@ fileprivate func rzfit_swift_string_from_triceps_extension_exercise_name(_ input
     case 38: return "triceps_extension_on_floor"
     case 39: return "triceps_pressdown"
     case 40: return "weighted_dip"
+    case 41: return "alternating_dumbbell_lying_triceps_extension"
+    case 42: return "triceps_press"
+    case 43: return "dumbbell_kickback_wheelchair"
+    case 44: return "overhead_dumbbell_triceps_extension_wheelchair"
     default: return "triceps_extension_exercise_name_\(input)"
   }
 }
@@ -6176,6 +6643,66 @@ fileprivate func rzfit_swift_string_from_warm_up_exercise_name(_ input : FIT_UIN
     case 28: return "walking_leg_cradles"
     case 29: return "walkout"
     case 30: return "walkout_from_push_up_position"
+    case 31: return "biceps_stretch"
+    case 32: return "glutes_stretch"
+    case 33: return "standing_hamstring_stretch"
+    case 34: return "stretch_90_90"
+    case 35: return "stretch_abs"
+    case 36: return "stretch_butterfly"
+    case 37: return "stretch_calf"
+    case 38: return "stretch_cat_cow"
+    case 39: return "stretch_childs_pose"
+    case 40: return "stretch_cobra"
+    case 41: return "stretch_forearms"
+    case 42: return "stretch_forward_glutes"
+    case 43: return "stretch_front_split"
+    case 44: return "stretch_hamstring"
+    case 45: return "stretch_hip_flexor_and_quad"
+    case 46: return "stretch_lat"
+    case 47: return "stretch_levator_scapulae"
+    case 48: return "stretch_lunge_with_spinal_twist"
+    case 49: return "stretch_lunging_hip_flexor"
+    case 50: return "stretch_lying_abduction"
+    case 51: return "stretch_lying_it_band"
+    case 52: return "stretch_lying_knee_to_chest"
+    case 53: return "stretch_lying_piriformis"
+    case 54: return "stretch_lying_spinal_twist"
+    case 55: return "stretch_neck"
+    case 56: return "stretch_obliques"
+    case 57: return "stretch_over_under_shoulder"
+    case 58: return "stretch_pectoral"
+    case 59: return "stretch_pigeon_pose"
+    case 60: return "stretch_piriformis"
+    case 61: return "stretch_quad"
+    case 62: return "stretch_scorpion"
+    case 63: return "stretch_shoulder"
+    case 64: return "stretch_side"
+    case 65: return "stretch_side_lunge"
+    case 66: return "stretch_side_split"
+    case 67: return "stretch_standing_it_band"
+    case 68: return "stretch_straddle"
+    case 69: return "stretch_triceps"
+    case 70: return "stretch_wall_chest_and_shoulder"
+    case 71: return "neck_rotations_wheelchair"
+    case 72: return "half_kneeling_arm_rotation"
+    case 73: return "three_way_ankle_mobilization"
+    case 74: return "ninety_ninety_hip_switch"
+    case 75: return "active_frog"
+    case 76: return "shoulder_sweeps"
+    case 77: return "ankle_lunges"
+    case 78: return "back_roll_foam_roller"
+    case 79: return "bear_crawl"
+    case 80: return "latissimus_dorsi_foam_roll"
+    case 81: return "reverse_t_hip_opener"
+    case 82: return "shoulder_rolls"
+    case 83: return "chest_openers"
+    case 84: return "triceps_stretch"
+    case 85: return "upper_back_stretch"
+    case 86: return "hip_circles"
+    case 87: return "ankle_stretch"
+    case 88: return "marching_in_place"
+    case 89: return "triceps_stretch_wheelchair"
+    case 90: return "upper_back_stretch_wheelchair"
     default: return "warm_up_exercise_name_\(input)"
   }
 }
@@ -6187,7 +6714,289 @@ fileprivate func rzfit_swift_string_from_run_exercise_name(_ input : FIT_UINT16)
     case 1: return "walk"
     case 2: return "jog"
     case 3: return "sprint"
+    case 4: return "run_or_walk"
+    case 5: return "speed_walk"
+    case 6: return "warm_up"
     default: return "run_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_bike_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "bike"
+    case 1: return "ride"
+    case 2: return "sprint"
+    default: return "bike_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_banded_exercises_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 1: return "ab_twist"
+    case 2: return "back_extension"
+    case 3: return "bicycle_crunch"
+    case 4: return "calf_raises"
+    case 5: return "chest_press"
+    case 6: return "clam_shells"
+    case 7: return "curl"
+    case 8: return "deadbug"
+    case 9: return "deadlift"
+    case 10: return "donkey_kick"
+    case 11: return "external_rotation"
+    case 12: return "external_rotation_at_90_degree_abduction"
+    case 13: return "face_pull"
+    case 14: return "fire_hydrant"
+    case 15: return "fly"
+    case 16: return "front_raise"
+    case 17: return "glute_bridge"
+    case 18: return "hamstring_curls"
+    case 19: return "high_plank_leg_lifts"
+    case 20: return "hip_extension"
+    case 21: return "internal_rotation"
+    case 22: return "jumping_jack"
+    case 23: return "kneeling_crunch"
+    case 24: return "lateral_band_walks"
+    case 25: return "lateral_raise"
+    case 26: return "latpull"
+    case 27: return "leg_abduction"
+    case 28: return "leg_adduction"
+    case 29: return "leg_extension"
+    case 30: return "lunge"
+    case 31: return "plank"
+    case 32: return "pull_apart"
+    case 33: return "push_ups"
+    case 34: return "reverse_crunch"
+    case 35: return "row"
+    case 36: return "shoulder_abduction"
+    case 37: return "shoulder_extension"
+    case 38: return "shoulder_external_rotation"
+    case 39: return "shoulder_flexion_to_90_degrees"
+    case 40: return "side_plank_leg_lifts"
+    case 41: return "side_raise"
+    case 42: return "squat"
+    case 43: return "squat_to_press"
+    case 44: return "tricep_extension"
+    case 45: return "tricep_kickback"
+    case 46: return "upright_row"
+    case 47: return "wall_crawl_with_external_rotation"
+    case 49: return "lateral_raise_wheelchair"
+    case 50: return "triceps_extension_wheelchair"
+    case 51: return "chest_fly_incline_wheelchair"
+    case 52: return "chest_fly_decline_wheelchair"
+    case 53: return "pull_down_wheelchair"
+    case 54: return "straight_arm_pull_down_wheelchair"
+    case 55: return "curl_wheelchair"
+    case 56: return "overhead_curl_wheelchair"
+    case 57: return "face_pull_wheelchair"
+    case 58: return "around_the_world_wheelchair"
+    case 59: return "pull_apart_wheelchair"
+    case 60: return "side_curl_wheelchair"
+    case 61: return "overhead_press_wheelchair"
+    default: return "banded_exercises_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_battle_rope_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "alternating_figure_eight"
+    case 1: return "alternating_jump_wave"
+    case 2: return "alternating_kneeling_to_standing_wave"
+    case 3: return "alternating_lunge_wave"
+    case 4: return "alternating_squat_wave"
+    case 5: return "alternating_wave"
+    case 6: return "alternating_wave_with_lateral_shuffle"
+    case 7: return "clap_wave"
+    case 8: return "double_arm_figure_eight"
+    case 9: return "double_arm_side_to_side_snake"
+    case 10: return "double_arm_side_wave"
+    case 11: return "double_arm_slam"
+    case 12: return "double_arm_wave"
+    case 13: return "grappler_toss"
+    case 14: return "hip_toss"
+    case 15: return "in_and_out_wave"
+    case 16: return "inside_circle"
+    case 17: return "jumping_jacks"
+    case 18: return "outside_circle"
+    case 19: return "rainbow"
+    case 20: return "side_plank_wave"
+    case 21: return "sidewinder"
+    case 22: return "sitting_russian_twist"
+    case 23: return "snake_wave"
+    case 24: return "split_jack"
+    case 25: return "stage_coach"
+    case 26: return "ultimate_warrior"
+    case 27: return "upper_cuts"
+    default: return "battle_rope_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_elliptical_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "elliptical"
+    default: return "elliptical_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_floor_climb_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "floor_climb"
+    default: return "floor_climb_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_indoor_bike_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "air_bike"
+    case 1: return "assault_bike"
+    case 3: return "stationary_bike"
+    default: return "indoor_bike_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_indoor_row_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "rowing_machine"
+    default: return "indoor_row_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_ladder_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "agility"
+    case 1: return "speed"
+    default: return "ladder_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_sandbag_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "around_the_world"
+    case 1: return "back_squat"
+    case 2: return "bear_crawl_pull_through"
+    case 3: return "bear_hug_squat"
+    case 4: return "clean"
+    case 5: return "clean_and_press"
+    case 6: return "curl"
+    case 7: return "front_carry"
+    case 8: return "front_squat"
+    case 9: return "lunge"
+    case 10: return "overhead_press"
+    case 11: return "plank_pull_through"
+    case 12: return "rotational_lunge"
+    case 13: return "row"
+    case 14: return "russian_twist"
+    case 15: return "shouldering"
+    case 16: return "shoveling"
+    case 17: return "side_lunge"
+    case 18: return "sprint"
+    case 19: return "zercher_squat"
+    default: return "sandbag_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_sled_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "backward_drag"
+    case 1: return "chest_press"
+    case 2: return "forward_drag"
+    case 3: return "low_push"
+    case 4: return "push"
+    case 5: return "row"
+    default: return "sled_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_sledge_hammer_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "lateral_swing"
+    case 1: return "hammer_slam"
+    default: return "sledge_hammer_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_stair_stepper_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "stair_stepper"
+    default: return "stair_stepper_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_suspension_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "chest_fly"
+    case 1: return "chest_press"
+    case 2: return "crunch"
+    case 3: return "curl"
+    case 4: return "dip"
+    case 5: return "face_pull"
+    case 6: return "glute_bridge"
+    case 7: return "hamstring_curl"
+    case 8: return "hip_drop"
+    case 9: return "inverted_row"
+    case 10: return "knee_drive_jump"
+    case 11: return "knee_to_chest"
+    case 12: return "lat_pullover"
+    case 13: return "lunge"
+    case 14: return "mountain_climber"
+    case 15: return "pendulum"
+    case 16: return "pike"
+    case 17: return "plank"
+    case 18: return "power_pull"
+    case 19: return "pull_up"
+    case 20: return "push_up"
+    case 21: return "reverse_mountain_climber"
+    case 22: return "reverse_plank"
+    case 23: return "rollout"
+    case 24: return "row"
+    case 25: return "side_lunge"
+    case 26: return "side_plank"
+    case 27: return "single_leg_deadlift"
+    case 28: return "single_leg_squat"
+    case 29: return "sit_up"
+    case 30: return "split"
+    case 31: return "squat"
+    case 32: return "squat_jump"
+    case 33: return "tricep_press"
+    case 34: return "y_fly"
+    default: return "suspension_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_tire_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "flip"
+    default: return "tire_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_bike_outdoor_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "bike"
+    default: return "bike_outdoor_exercise_name_\(input)"
+  }
+}
+
+fileprivate func rzfit_swift_string_from_run_indoor_exercise_name(_ input : FIT_UINT16) -> String
+{
+   switch input {
+    case 0: return "indoor_track_run"
+    case 1: return "treadmill"
+    default: return "run_indoor_exercise_name_\(input)"
   }
 }
 
@@ -6823,6 +7632,15 @@ fileprivate func rzfit_swift_field_num_to_string_for_met_zone( field_num : FIT_U
     case 2: return "calories"
     case 3: return "fat_calories"
     default: return "met_zone_field_num_\(field_num)"
+  }
+}
+fileprivate func rzfit_swift_field_num_to_string_for_training_settings( field_num : FIT_UINT16 ) -> String {
+  switch field_num {
+    case 31: return "target_distance"
+    case 32: return "target_speed"
+    case 33: return "target_time"
+    case 153: return "precise_target_speed"
+    default: return "training_settings_field_num_\(field_num)"
   }
 }
 fileprivate func rzfit_swift_field_num_to_string_for_dive_settings( field_num : FIT_UINT16 , strings : [String:String] ) -> String {
@@ -8807,6 +9625,7 @@ func rzfit_swift_field_num_to_string( mesg_num : FIT_UINT16, field_num : FIT_UIN
     case 9: return rzfit_swift_field_num_to_string_for_power_zone(field_num: field_num)
     case 10: return rzfit_swift_field_num_to_string_for_met_zone(field_num: field_num)
     case 12: return rzfit_swift_field_num_to_string_for_sport(field_num: field_num)
+    case 13: return rzfit_swift_field_num_to_string_for_training_settings(field_num: field_num)
     case 15: return rzfit_swift_field_num_to_string_for_goal(field_num: field_num)
     case 18: return rzfit_swift_field_num_to_string_for_session(field_num: field_num, strings: strings)
     case 19: return rzfit_swift_field_num_to_string_for_lap(field_num: field_num, strings: strings)
@@ -9873,6 +10692,29 @@ fileprivate func rzfit_swift_string_dict_for_met_zone( ptr : UnsafePointer<FIT_M
   return rv
 }
 fileprivate func rzfit_swift_date_dict_for_met_zone( ptr : UnsafePointer<FIT_MET_ZONE_MESG>) -> [String:Date] {
+  return [:]
+}
+fileprivate func rzfit_swift_value_dict_for_training_settings( ptr : UnsafePointer<FIT_TRAINING_SETTINGS_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_TRAINING_SETTINGS_MESG = ptr.pointee
+  if x.target_distance != FIT_UINT32_INVALID  {
+    let val : Double = (Double(x.target_distance)/Double(100))
+    rv[ "target_distance" ] = val
+  }
+  if x.target_time != FIT_UINT32_INVALID  {
+    let val : Double = Double(x.target_time)
+    rv[ "target_time" ] = val
+  }
+  if x.target_speed != FIT_UINT16_INVALID  {
+    let val : Double = (Double(x.target_speed)/Double(1000))
+    rv[ "target_speed" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_training_settings( ptr : UnsafePointer<FIT_TRAINING_SETTINGS_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_training_settings( ptr : UnsafePointer<FIT_TRAINING_SETTINGS_MESG>) -> [String:Date] {
   return [:]
 }
 fileprivate func rzfit_swift_value_dict_for_dive_settings( ptr : UnsafePointer<FIT_DIVE_SETTINGS_MESG>) -> [String:Double] {
