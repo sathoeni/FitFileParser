@@ -753,6 +753,49 @@ typedef struct {
 
 typedef struct {
   FIT_UINT32 timestamp; // 
+  FIT_UINT16 sample_time_offset[1000]; // 
+  FIT_FLOAT32 calibrated_gyro_x[1]; // 
+  FIT_FLOAT32 calibrated_gyro_y[1]; // 
+  FIT_FLOAT32 calibrated_gyro_z[1]; // 
+  FIT_UINT16 timestamp_ms; // 
+  FIT_UINT16 gyro_x[1]; // 
+  FIT_UINT16 gyro_y[1]; // 
+  FIT_UINT16 gyro_z[1]; // 
+} FIT_GYROSCOPE_DATA_MESG;
+
+typedef struct {
+  FIT_UINT32 timestamp; // 
+  FIT_UINT16 sample_time_offset[1000]; // 
+  FIT_FLOAT32 calibrated_accel_x[1]; // 
+  FIT_FLOAT32 calibrated_accel_y[1]; // 
+  FIT_FLOAT32 calibrated_accel_z[1]; // 
+  FIT_UINT16 timestamp_ms; // 
+  FIT_UINT16 accel_x[1]; // 
+  FIT_UINT16 accel_y[1]; // 
+  FIT_UINT16 accel_z[1]; // 
+} FIT_ACCELEROMETER_DATA_MESG;
+
+typedef struct {
+  FIT_UINT32 timestamp; // 
+  FIT_UINT16 sample_time_offset[1000]; // 
+  FIT_FLOAT32 calibrated_mag_x[1]; // 
+  FIT_FLOAT32 calibrated_mag_y[1]; // 
+  FIT_FLOAT32 calibrated_mag_z[1]; // 
+  FIT_UINT16 timestamp_ms; // 
+  FIT_UINT16 mag_x[1]; // 
+  FIT_UINT16 mag_y[1]; // 
+  FIT_UINT16 mag_z[1]; // 
+} FIT_MAGNETOMETER_DATA_MESG;
+
+typedef struct {
+  FIT_UINT32 timestamp; // 
+  FIT_UINT16 sample_time_offset[1000]; // 
+  FIT_UINT32 baro_pres[1]; // 
+  FIT_UINT16 timestamp_ms; // 
+} FIT_BAROMETER_DATA_MESG;
+
+typedef struct {
+  FIT_UINT32 timestamp; // 
   FIT_UINT16 timestamp_ms; // 
   FIT_STRING sentence[83]; // 
 } FIT_NMEA_SENTENCE_MESG;
@@ -1077,6 +1120,14 @@ typedef struct {
   FIT_UINT8 filtered_bpm[1]; // 
   FIT_BYTE event_timestamp_12[1]; // 
 } FIT_HR_MESG;
+
+typedef struct {
+  FIT_UINT32 timestamp; // 
+  FIT_UINT16 timestamp_ms; // 
+  FIT_SINT16 gyro_x[1]; // 
+  FIT_SINT16 gyro_y[1]; // 
+  FIT_SINT16 gyro_z[1]; // 
+} FIT_HSA_GYROSCOPE_DATA_MESG;
 
 typedef struct {
   FIT_UINT32 timestamp; // 

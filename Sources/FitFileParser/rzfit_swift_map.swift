@@ -6,6 +6,9 @@ extension FitFile {
   public static let sdkVersion = "21.171.0"
 }
 
+// FLOAT32 invalid constant (C macro not bridged to Swift)
+let FIT_FLOAT32_INVALID: Float = .nan
+
 //MARK: - Module Entry Point Functions
 
 func rzfit_swift_build_mesg(mesg_num : FIT_MESG_NUM, uptr : UnsafePointer<UInt8>) -> FitMessage? {
@@ -382,6 +385,20 @@ func rzfit_swift_build_mesg(mesg_num : FIT_MESG_NUM, uptr : UnsafePointer<UInt8>
                        mesg_enums:  rzfit_swift_string_dict_for_workout_session(ptr: $0),
                        mesg_dates:  rzfit_swift_date_dict_for_workout_session(ptr: $0))
       }
+    case 164: // gyroscope_data
+      uptr.withMemoryRebound(to: FIT_GYROSCOPE_DATA_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    164,
+                       mesg_values: rzfit_swift_value_dict_for_gyroscope_data(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_gyroscope_data(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_gyroscope_data(ptr: $0))
+      }
+    case 165: // accelerometer_data
+      uptr.withMemoryRebound(to: FIT_ACCELEROMETER_DATA_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    165,
+                       mesg_values: rzfit_swift_value_dict_for_accelerometer_data(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_accelerometer_data(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_accelerometer_data(ptr: $0))
+      }
     case 177: // nmea_sentence
       uptr.withMemoryRebound(to: FIT_NMEA_SENTENCE_MESG.self, capacity: 1) {
       rv = FitMessage( mesg_num:    177,
@@ -445,6 +462,20 @@ func rzfit_swift_build_mesg(mesg_num : FIT_MESG_NUM, uptr : UnsafePointer<UInt8>
                        mesg_enums:  rzfit_swift_string_dict_for_developer_data_id(ptr: $0),
                        mesg_dates:  rzfit_swift_date_dict_for_developer_data_id(ptr: $0))
       }
+    case 208: // magnetometer_data
+      uptr.withMemoryRebound(to: FIT_MAGNETOMETER_DATA_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    208,
+                       mesg_values: rzfit_swift_value_dict_for_magnetometer_data(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_magnetometer_data(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_magnetometer_data(ptr: $0))
+      }
+    case 209: // barometer_data
+      uptr.withMemoryRebound(to: FIT_BAROMETER_DATA_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    209,
+                       mesg_values: rzfit_swift_value_dict_for_barometer_data(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_barometer_data(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_barometer_data(ptr: $0))
+      }
     case 211: // monitoring_hr_data
       uptr.withMemoryRebound(to: FIT_MONITORING_HR_DATA_MESG.self, capacity: 1) {
       rv = FitMessage( mesg_num:    211,
@@ -479,6 +510,13 @@ func rzfit_swift_build_mesg(mesg_num : FIT_MESG_NUM, uptr : UnsafePointer<UInt8>
                        mesg_values: rzfit_swift_value_dict_for_device_aux_battery_info(ptr: $0),
                        mesg_enums:  rzfit_swift_string_dict_for_device_aux_battery_info(ptr: $0),
                        mesg_dates:  rzfit_swift_date_dict_for_device_aux_battery_info(ptr: $0))
+      }
+    case 376: // hsa_gyroscope_data
+      uptr.withMemoryRebound(to: FIT_HSA_GYROSCOPE_DATA_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    376,
+                       mesg_values: rzfit_swift_value_dict_for_hsa_gyroscope_data(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_hsa_gyroscope_data(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_hsa_gyroscope_data(ptr: $0))
       }
     default:
        rv = FitMessage( mesg_num: mesg_num, mesg_values: [:], mesg_enums: [:], mesg_dates: [:])
@@ -12458,6 +12496,205 @@ fileprivate func rzfit_swift_date_dict_for_weather_alert( ptr : UnsafePointer<FI
   }
   return rv
 }
+fileprivate func rzfit_swift_value_dict_for_gyroscope_data( ptr : UnsafePointer<FIT_GYROSCOPE_DATA_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_GYROSCOPE_DATA_MESG = ptr.pointee
+  if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
+    // Array[1000]
+    let val : Double = Double(x.sample_time_offset.0)
+    rv[ "sample_time_offset" ] = val
+  }
+  if x.calibrated_gyro_x != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_gyro_x)
+    rv[ "calibrated_gyro_x" ] = val
+  }
+  if x.calibrated_gyro_y != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_gyro_y)
+    rv[ "calibrated_gyro_y" ] = val
+  }
+  if x.calibrated_gyro_z != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_gyro_z)
+    rv[ "calibrated_gyro_z" ] = val
+  }
+  if x.timestamp_ms != FIT_UINT16_INVALID  {
+    let val : Double = Double(x.timestamp_ms)
+    rv[ "timestamp_ms" ] = val
+  }
+  if x.gyro_x != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.gyro_x)
+    rv[ "gyro_x" ] = val
+  }
+  if x.gyro_y != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.gyro_y)
+    rv[ "gyro_y" ] = val
+  }
+  if x.gyro_z != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.gyro_z)
+    rv[ "gyro_z" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_gyroscope_data( ptr : UnsafePointer<FIT_GYROSCOPE_DATA_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_gyroscope_data( ptr : UnsafePointer<FIT_GYROSCOPE_DATA_MESG>) -> [String:Date] {
+  var rv : [String:Date] = [:]
+  let x : FIT_GYROSCOPE_DATA_MESG = ptr.pointee
+  if x.timestamp != FIT_UINT32_INVALID  {
+    let val : Date =  Date(timeIntervalSinceReferenceDate: Double(x.timestamp)-347241600.0 )
+    rv[ "timestamp" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_value_dict_for_accelerometer_data( ptr : UnsafePointer<FIT_ACCELEROMETER_DATA_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_ACCELEROMETER_DATA_MESG = ptr.pointee
+  if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
+    // Array[1000]
+    let val : Double = Double(x.sample_time_offset.0)
+    rv[ "sample_time_offset" ] = val
+  }
+  if x.calibrated_accel_x != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_accel_x)
+    rv[ "calibrated_accel_x" ] = val
+  }
+  if x.calibrated_accel_y != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_accel_y)
+    rv[ "calibrated_accel_y" ] = val
+  }
+  if x.calibrated_accel_z != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_accel_z)
+    rv[ "calibrated_accel_z" ] = val
+  }
+  if x.timestamp_ms != FIT_UINT16_INVALID  {
+    let val : Double = Double(x.timestamp_ms)
+    rv[ "timestamp_ms" ] = val
+  }
+  if x.accel_x != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.accel_x)
+    rv[ "accel_x" ] = val
+  }
+  if x.accel_y != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.accel_y)
+    rv[ "accel_y" ] = val
+  }
+  if x.accel_z != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.accel_z)
+    rv[ "accel_z" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_accelerometer_data( ptr : UnsafePointer<FIT_ACCELEROMETER_DATA_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_accelerometer_data( ptr : UnsafePointer<FIT_ACCELEROMETER_DATA_MESG>) -> [String:Date] {
+  var rv : [String:Date] = [:]
+  let x : FIT_ACCELEROMETER_DATA_MESG = ptr.pointee
+  if x.timestamp != FIT_UINT32_INVALID  {
+    let val : Date =  Date(timeIntervalSinceReferenceDate: Double(x.timestamp)-347241600.0 )
+    rv[ "timestamp" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_value_dict_for_magnetometer_data( ptr : UnsafePointer<FIT_MAGNETOMETER_DATA_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_MAGNETOMETER_DATA_MESG = ptr.pointee
+  if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
+    // Array[1000]
+    let val : Double = Double(x.sample_time_offset.0)
+    rv[ "sample_time_offset" ] = val
+  }
+  if x.calibrated_mag_x != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_mag_x)
+    rv[ "calibrated_mag_x" ] = val
+  }
+  if x.calibrated_mag_y != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_mag_y)
+    rv[ "calibrated_mag_y" ] = val
+  }
+  if x.calibrated_mag_z != FIT_FLOAT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.calibrated_mag_z)
+    rv[ "calibrated_mag_z" ] = val
+  }
+  if x.timestamp_ms != FIT_UINT16_INVALID  {
+    let val : Double = Double(x.timestamp_ms)
+    rv[ "timestamp_ms" ] = val
+  }
+  if x.mag_x != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.mag_x)
+    rv[ "mag_x" ] = val
+  }
+  if x.mag_y != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.mag_y)
+    rv[ "mag_y" ] = val
+  }
+  if x.mag_z != FIT_UINT16_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.mag_z)
+    rv[ "mag_z" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_magnetometer_data( ptr : UnsafePointer<FIT_MAGNETOMETER_DATA_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_magnetometer_data( ptr : UnsafePointer<FIT_MAGNETOMETER_DATA_MESG>) -> [String:Date] {
+  var rv : [String:Date] = [:]
+  let x : FIT_MAGNETOMETER_DATA_MESG = ptr.pointee
+  if x.timestamp != FIT_UINT32_INVALID  {
+    let val : Date =  Date(timeIntervalSinceReferenceDate: Double(x.timestamp)-347241600.0 )
+    rv[ "timestamp" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_value_dict_for_barometer_data( ptr : UnsafePointer<FIT_BAROMETER_DATA_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_BAROMETER_DATA_MESG = ptr.pointee
+  if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
+    // Array[1000]
+    let val : Double = Double(x.sample_time_offset.0)
+    rv[ "sample_time_offset" ] = val
+  }
+  if x.baro_pres != FIT_UINT32_INVALID  {
+    // Array[1]
+    let val : Double = Double(x.baro_pres)
+    rv[ "baro_pres" ] = val
+  }
+  if x.timestamp_ms != FIT_UINT16_INVALID  {
+    let val : Double = Double(x.timestamp_ms)
+    rv[ "timestamp_ms" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_barometer_data( ptr : UnsafePointer<FIT_BAROMETER_DATA_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_barometer_data( ptr : UnsafePointer<FIT_BAROMETER_DATA_MESG>) -> [String:Date] {
+  var rv : [String:Date] = [:]
+  let x : FIT_BAROMETER_DATA_MESG = ptr.pointee
+  if x.timestamp != FIT_UINT32_INVALID  {
+    let val : Date =  Date(timeIntervalSinceReferenceDate: Double(x.timestamp)-347241600.0 )
+    rv[ "timestamp" ] = val
+  }
+  return rv
+}
 fileprivate func rzfit_swift_value_dict_for_nmea_sentence( ptr : UnsafePointer<FIT_NMEA_SENTENCE_MESG>) -> [String:Double] {
   var rv : [String:Double] = [:]
   let x : FIT_NMEA_SENTENCE_MESG = ptr.pointee
@@ -14077,6 +14314,42 @@ fileprivate func rzfit_swift_string_dict_for_hr( ptr : UnsafePointer<FIT_HR_MESG
 fileprivate func rzfit_swift_date_dict_for_hr( ptr : UnsafePointer<FIT_HR_MESG>) -> [String:Date] {
   var rv : [String:Date] = [:]
   let x : FIT_HR_MESG = ptr.pointee
+  if x.timestamp != FIT_UINT32_INVALID  {
+    let val : Date =  Date(timeIntervalSinceReferenceDate: Double(x.timestamp)-347241600.0 )
+    rv[ "timestamp" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_value_dict_for_hsa_gyroscope_data( ptr : UnsafePointer<FIT_HSA_GYROSCOPE_DATA_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_HSA_GYROSCOPE_DATA_MESG = ptr.pointee
+  if x.timestamp_ms != FIT_UINT16_INVALID  {
+    let val : Double = Double(x.timestamp_ms)
+    rv[ "timestamp_ms" ] = val
+  }
+  if x.gyro_x != FIT_SINT16_INVALID  {
+    // Array[1]
+    let val : Double = (Double(x.gyro_x)/Double(28.57143))
+    rv[ "gyro_x" ] = val
+  }
+  if x.gyro_y != FIT_SINT16_INVALID  {
+    // Array[1]
+    let val : Double = (Double(x.gyro_y)/Double(28.57143))
+    rv[ "gyro_y" ] = val
+  }
+  if x.gyro_z != FIT_SINT16_INVALID  {
+    // Array[1]
+    let val : Double = (Double(x.gyro_z)/Double(28.57143))
+    rv[ "gyro_z" ] = val
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_hsa_gyroscope_data( ptr : UnsafePointer<FIT_HSA_GYROSCOPE_DATA_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_hsa_gyroscope_data( ptr : UnsafePointer<FIT_HSA_GYROSCOPE_DATA_MESG>) -> [String:Date] {
+  var rv : [String:Date] = [:]
+  let x : FIT_HSA_GYROSCOPE_DATA_MESG = ptr.pointee
   if x.timestamp != FIT_UINT32_INVALID  {
     let val : Date =  Date(timeIntervalSinceReferenceDate: Double(x.timestamp)-347241600.0 )
     rv[ "timestamp" ] = val
