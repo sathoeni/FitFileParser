@@ -2,12 +2,12 @@
 
 import FitFileParserObjc
 
+// FLOAT32 invalid constant (C macro not bridged to Swift)
+let FIT_FLOAT32_INVALID: Float = .nan
+
 extension FitFile {
   public static let sdkVersion = "21.171.0"
 }
-
-// FLOAT32 invalid constant (C macro not bridged to Swift)
-let FIT_FLOAT32_INVALID: Float = .nan
 
 //MARK: - Module Entry Point Functions
 
@@ -503,6 +503,13 @@ func rzfit_swift_build_mesg(mesg_num : FIT_MESG_NUM, uptr : UnsafePointer<UInt8>
                        mesg_values: rzfit_swift_value_dict_for_exercise_title(ptr: $0),
                        mesg_enums:  rzfit_swift_string_dict_for_exercise_title(ptr: $0),
                        mesg_dates:  rzfit_swift_date_dict_for_exercise_title(ptr: $0))
+      }
+    case 302: // hsa_accelerometer_data
+      uptr.withMemoryRebound(to: FIT_HSA_ACCELEROMETER_DATA_MESG.self, capacity: 1) {
+      rv = FitMessage( mesg_num:    302,
+                       mesg_values: rzfit_swift_value_dict_for_hsa_accelerometer_data(ptr: $0),
+                       mesg_enums:  rzfit_swift_string_dict_for_hsa_accelerometer_data(ptr: $0),
+                       mesg_dates:  rzfit_swift_date_dict_for_hsa_accelerometer_data(ptr: $0))
       }
     case 375: // device_aux_battery_info
       uptr.withMemoryRebound(to: FIT_DEVICE_AUX_BATTERY_INFO_MESG.self, capacity: 1) {
@@ -9911,8 +9918,16 @@ fileprivate func rzfit_swift_value_dict_for_capabilities( ptr : UnsafePointer<FI
   let x : FIT_CAPABILITIES_MESG = ptr.pointee
   if x.languages.0 != FIT_UINT8Z_INVALID  {
     // Array[4]
-    let val : Double = Double(x.languages.0)
-    rv[ "languages" ] = val
+    withUnsafeBytes(of: x.languages) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT8Z.self)
+      for idx in 0..<4 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT8Z_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "languages[\(idx)]" ] = val
+        }
+      }
+    }
   }
   return rv
 }
@@ -10055,23 +10070,55 @@ fileprivate func rzfit_swift_value_dict_for_device_settings( ptr : UnsafePointer
   }
   if x.time_offset.0 != FIT_UINT32_INVALID  {
     // Array[2]
-    let val : Double = Double(x.time_offset.0)
-    rv[ "time_offset" ] = val
+    withUnsafeBytes(of: x.time_offset) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<2 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_offset[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_zone_offset.0 != FIT_SINT8_INVALID  {
     // Array[2]
-    let val : Double = (Double(x.time_zone_offset.0)/Double(4))
-    rv[ "time_zone_offset" ] = val
+    withUnsafeBytes(of: x.time_zone_offset) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT8.self)
+      for idx in 0..<2 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT8_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_zone_offset[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.pages_enabled != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.pages_enabled)
-    rv[ "pages_enabled" ] = val
+    withUnsafeBytes(of: x.pages_enabled) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "pages_enabled[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.default_page != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.default_page)
-    rv[ "default_page" ] = val
+    withUnsafeBytes(of: x.default_page) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "default_page[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.autosync_min_steps != FIT_UINT16_INVALID  {
     let val : Double = Double(x.autosync_min_steps)
@@ -10136,8 +10183,16 @@ fileprivate func rzfit_swift_value_dict_for_user_profile( ptr : UnsafePointer<FI
   }
   if x.global_id.0 != FIT_BYTE_INVALID  {
     // Array[6]
-    let val : Double = Double(x.global_id.0)
-    rv[ "global_id" ] = val
+    withUnsafeBytes(of: x.global_id) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<6 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "global_id[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.user_running_step_length != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.user_running_step_length)/Double(1000))
@@ -10416,8 +10471,16 @@ fileprivate func rzfit_swift_value_dict_for_bike_profile( ptr : UnsafePointer<FI
   }
   if x.front_gear != FIT_UINT8Z_INVALID  {
     // Array[1]
-    let val : Double = Double(x.front_gear)
-    rv[ "front_gear" ] = val
+    withUnsafeBytes(of: x.front_gear) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT8Z.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT8Z_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "front_gear[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.rear_gear_num != FIT_UINT8Z_INVALID  {
     let val : Double = Double(x.rear_gear_num)
@@ -10425,8 +10488,16 @@ fileprivate func rzfit_swift_value_dict_for_bike_profile( ptr : UnsafePointer<FI
   }
   if x.rear_gear != FIT_UINT8Z_INVALID  {
     // Array[1]
-    let val : Double = Double(x.rear_gear)
-    rv[ "rear_gear" ] = val
+    withUnsafeBytes(of: x.rear_gear) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT8Z.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT8Z_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "rear_gear[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.shimano_di2_enabled != FIT_BOOL_INVALID  {
     let val : Double = Double(x.shimano_di2_enabled)
@@ -10976,23 +11047,55 @@ fileprivate func rzfit_swift_value_dict_for_session( ptr : UnsafePointer<FIT_SES
   }
   if x.time_in_hr_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_hr_zone)/Double(1000))
-    rv[ "time_in_hr_zone" ] = val
+    withUnsafeBytes(of: x.time_in_hr_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_hr_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_speed_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_speed_zone)/Double(1000))
-    rv[ "time_in_speed_zone" ] = val
+    withUnsafeBytes(of: x.time_in_speed_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_speed_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_cadence_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_cadence_zone)/Double(1000))
-    rv[ "time_in_cadence_zone" ] = val
+    withUnsafeBytes(of: x.time_in_cadence_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_cadence_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_power_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_power_zone)/Double(1000))
-    rv[ "time_in_power_zone" ] = val
+    withUnsafeBytes(of: x.time_in_power_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_power_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.avg_lap_time != FIT_UINT32_INVALID  {
     let val : Double = (Double(x.avg_lap_time)/Double(1000))
@@ -11158,13 +11261,29 @@ fileprivate func rzfit_swift_value_dict_for_session( ptr : UnsafePointer<FIT_SES
   }
   if x.stroke_count != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.stroke_count)
-    rv[ "stroke_count" ] = val
+    withUnsafeBytes(of: x.stroke_count) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "stroke_count[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.zone_count != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.zone_count)
-    rv[ "zone_count" ] = val
+    withUnsafeBytes(of: x.zone_count) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "zone_count[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.max_ball_speed != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.max_ball_speed)/Double(100))
@@ -11390,23 +11509,55 @@ fileprivate func rzfit_swift_value_dict_for_lap( ptr : UnsafePointer<FIT_LAP_MES
   }
   if x.time_in_hr_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_hr_zone)/Double(1000))
-    rv[ "time_in_hr_zone" ] = val
+    withUnsafeBytes(of: x.time_in_hr_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_hr_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_speed_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_speed_zone)/Double(1000))
-    rv[ "time_in_speed_zone" ] = val
+    withUnsafeBytes(of: x.time_in_speed_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_speed_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_cadence_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_cadence_zone)/Double(1000))
-    rv[ "time_in_cadence_zone" ] = val
+    withUnsafeBytes(of: x.time_in_cadence_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_cadence_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_power_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_power_zone)/Double(1000))
-    rv[ "time_in_power_zone" ] = val
+    withUnsafeBytes(of: x.time_in_power_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_power_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.enhanced_avg_speed != FIT_UINT32_INVALID  {
     let val : Double = (Double(x.enhanced_avg_speed)/Double(1000))
@@ -11547,13 +11698,29 @@ fileprivate func rzfit_swift_value_dict_for_lap( ptr : UnsafePointer<FIT_LAP_MES
   }
   if x.stroke_count != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.stroke_count)
-    rv[ "stroke_count" ] = val
+    withUnsafeBytes(of: x.stroke_count) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "stroke_count[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.zone_count != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.zone_count)
-    rv[ "zone_count" ] = val
+    withUnsafeBytes(of: x.zone_count) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "zone_count[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.avg_vertical_oscillation != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.avg_vertical_oscillation)/Double(10))
@@ -11573,33 +11740,81 @@ fileprivate func rzfit_swift_value_dict_for_lap( ptr : UnsafePointer<FIT_LAP_MES
   }
   if x.avg_total_hemoglobin_conc != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.avg_total_hemoglobin_conc)/Double(100))
-    rv[ "avg_total_hemoglobin_conc" ] = val
+    withUnsafeBytes(of: x.avg_total_hemoglobin_conc) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "avg_total_hemoglobin_conc[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.min_total_hemoglobin_conc != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.min_total_hemoglobin_conc)/Double(100))
-    rv[ "min_total_hemoglobin_conc" ] = val
+    withUnsafeBytes(of: x.min_total_hemoglobin_conc) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "min_total_hemoglobin_conc[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.max_total_hemoglobin_conc != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.max_total_hemoglobin_conc)/Double(100))
-    rv[ "max_total_hemoglobin_conc" ] = val
+    withUnsafeBytes(of: x.max_total_hemoglobin_conc) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "max_total_hemoglobin_conc[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.avg_saturated_hemoglobin_percent != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.avg_saturated_hemoglobin_percent)/Double(10))
-    rv[ "avg_saturated_hemoglobin_percent" ] = val
+    withUnsafeBytes(of: x.avg_saturated_hemoglobin_percent) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "avg_saturated_hemoglobin_percent[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.min_saturated_hemoglobin_percent != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.min_saturated_hemoglobin_percent)/Double(10))
-    rv[ "min_saturated_hemoglobin_percent" ] = val
+    withUnsafeBytes(of: x.min_saturated_hemoglobin_percent) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "min_saturated_hemoglobin_percent[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.max_saturated_hemoglobin_percent != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.max_saturated_hemoglobin_percent)/Double(10))
-    rv[ "max_saturated_hemoglobin_percent" ] = val
+    withUnsafeBytes(of: x.max_saturated_hemoglobin_percent) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "max_saturated_hemoglobin_percent[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.avg_vam != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.avg_vam)/Double(1000))
@@ -11753,13 +11968,29 @@ fileprivate func rzfit_swift_value_dict_for_length( ptr : UnsafePointer<FIT_LENG
   }
   if x.stroke_count != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.stroke_count)
-    rv[ "stroke_count" ] = val
+    withUnsafeBytes(of: x.stroke_count) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "stroke_count[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.zone_count != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = Double(x.zone_count)
-    rv[ "zone_count" ] = val
+    withUnsafeBytes(of: x.zone_count) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "zone_count[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.avg_swimming_cadence != FIT_UINT8_INVALID  {
     let val : Double = Double(x.avg_swimming_cadence)
@@ -11921,8 +12152,16 @@ fileprivate func rzfit_swift_value_dict_for_record( ptr : UnsafePointer<FIT_RECO
   }
   if x.compressed_speed_distance.0 != FIT_BYTE_INVALID  {
     // Array[3]
-    let val : Double = Double(x.compressed_speed_distance.0)
-    rv[ "compressed_speed_distance" ] = val
+    withUnsafeBytes(of: x.compressed_speed_distance) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<3 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "compressed_speed_distance[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.resistance != FIT_UINT8_INVALID  {
     let val : Double = Double(x.resistance)
@@ -11938,8 +12177,16 @@ fileprivate func rzfit_swift_value_dict_for_record( ptr : UnsafePointer<FIT_RECO
   }
   if x.speed_1s.0 != FIT_UINT8_INVALID  {
     // Array[5]
-    let val : Double = (Double(x.speed_1s.0)/Double(16))
-    rv[ "speed_1s" ] = val
+    withUnsafeBytes(of: x.speed_1s) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT8.self)
+      for idx in 0..<5 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT8_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "speed_1s[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.cycles != FIT_UINT8_INVALID  {
     let val : Double = Double(x.cycles)
@@ -12500,43 +12747,99 @@ fileprivate func rzfit_swift_value_dict_for_gyroscope_data( ptr : UnsafePointer<
   var rv : [String:Double] = [:]
   let x : FIT_GYROSCOPE_DATA_MESG = ptr.pointee
   if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
-    // Array[1000]
-    let val : Double = Double(x.sample_time_offset.0)
-    rv[ "sample_time_offset" ] = val
+    // Array[100]
+    withUnsafeBytes(of: x.sample_time_offset) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "sample_time_offset[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_gyro_x.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_gyro_x)
-    rv[ "calibrated_gyro_x" ] = val
+  if x.gyro_x.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.gyro_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "gyro_x[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_gyro_y.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_gyro_y)
-    rv[ "calibrated_gyro_y" ] = val
+  if x.gyro_y.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.gyro_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "gyro_y[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_gyro_z.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_gyro_z)
-    rv[ "calibrated_gyro_z" ] = val
+  if x.gyro_z.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.gyro_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "gyro_z[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_gyro_x.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_gyro_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_gyro_x[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_gyro_y.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_gyro_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_gyro_y[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_gyro_z.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_gyro_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_gyro_z[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.timestamp_ms != FIT_UINT16_INVALID  {
     let val : Double = Double(x.timestamp_ms)
     rv[ "timestamp_ms" ] = val
-  }
-  if x.gyro_x != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.gyro_x)
-    rv[ "gyro_x" ] = val
-  }
-  if x.gyro_y != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.gyro_y)
-    rv[ "gyro_y" ] = val
-  }
-  if x.gyro_z != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.gyro_z)
-    rv[ "gyro_z" ] = val
   }
   return rv
 }
@@ -12556,43 +12859,99 @@ fileprivate func rzfit_swift_value_dict_for_accelerometer_data( ptr : UnsafePoin
   var rv : [String:Double] = [:]
   let x : FIT_ACCELEROMETER_DATA_MESG = ptr.pointee
   if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
-    // Array[1000]
-    let val : Double = Double(x.sample_time_offset.0)
-    rv[ "sample_time_offset" ] = val
+    // Array[100]
+    withUnsafeBytes(of: x.sample_time_offset) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "sample_time_offset[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_accel_x.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_accel_x)
-    rv[ "calibrated_accel_x" ] = val
+  if x.accel_x.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.accel_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_x[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_accel_y.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_accel_y)
-    rv[ "calibrated_accel_y" ] = val
+  if x.accel_y.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.accel_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_y[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_accel_z.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_accel_z)
-    rv[ "calibrated_accel_z" ] = val
+  if x.accel_z.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.accel_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_z[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_accel_x.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_accel_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_accel_x[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_accel_y.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_accel_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_accel_y[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_accel_z.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_accel_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_accel_z[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.timestamp_ms != FIT_UINT16_INVALID  {
     let val : Double = Double(x.timestamp_ms)
     rv[ "timestamp_ms" ] = val
-  }
-  if x.accel_x != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.accel_x)
-    rv[ "accel_x" ] = val
-  }
-  if x.accel_y != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.accel_y)
-    rv[ "accel_y" ] = val
-  }
-  if x.accel_z != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.accel_z)
-    rv[ "accel_z" ] = val
   }
   return rv
 }
@@ -12612,43 +12971,99 @@ fileprivate func rzfit_swift_value_dict_for_magnetometer_data( ptr : UnsafePoint
   var rv : [String:Double] = [:]
   let x : FIT_MAGNETOMETER_DATA_MESG = ptr.pointee
   if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
-    // Array[1000]
-    let val : Double = Double(x.sample_time_offset.0)
-    rv[ "sample_time_offset" ] = val
+    // Array[100]
+    withUnsafeBytes(of: x.sample_time_offset) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "sample_time_offset[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_mag_x.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_mag_x)
-    rv[ "calibrated_mag_x" ] = val
+  if x.mag_x.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.mag_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "mag_x[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_mag_y.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_mag_y)
-    rv[ "calibrated_mag_y" ] = val
+  if x.mag_y.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.mag_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "mag_y[\(idx)]" ] = val
+        }
+      }
+    }
   }
-  if !x.calibrated_mag_z.isNaN  {
-    // Array[1]
-    let val : Double = Double(x.calibrated_mag_z)
-    rv[ "calibrated_mag_z" ] = val
+  if x.mag_z.0 != FIT_UINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.mag_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "mag_z[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_mag_x.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_mag_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_mag_x[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_mag_y.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_mag_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_mag_y[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.calibrated_mag_z.0 != FIT_FLOAT32_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.calibrated_mag_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_FLOAT32.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_FLOAT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "calibrated_mag_z[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.timestamp_ms != FIT_UINT16_INVALID  {
     let val : Double = Double(x.timestamp_ms)
     rv[ "timestamp_ms" ] = val
-  }
-  if x.mag_x != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.mag_x)
-    rv[ "mag_x" ] = val
-  }
-  if x.mag_y != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.mag_y)
-    rv[ "mag_y" ] = val
-  }
-  if x.mag_z != FIT_UINT16_INVALID  {
-    // Array[1]
-    let val : Double = Double(x.mag_z)
-    rv[ "mag_z" ] = val
   }
   return rv
 }
@@ -12669,13 +13084,29 @@ fileprivate func rzfit_swift_value_dict_for_barometer_data( ptr : UnsafePointer<
   let x : FIT_BAROMETER_DATA_MESG = ptr.pointee
   if x.sample_time_offset.0 != FIT_UINT16_INVALID  {
     // Array[1000]
-    let val : Double = Double(x.sample_time_offset.0)
-    rv[ "sample_time_offset" ] = val
+    withUnsafeBytes(of: x.sample_time_offset) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1000 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "sample_time_offset[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.baro_pres != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = Double(x.baro_pres)
-    rv[ "baro_pres" ] = val
+    withUnsafeBytes(of: x.baro_pres) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "baro_pres[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.timestamp_ms != FIT_UINT16_INVALID  {
     let val : Double = Double(x.timestamp_ms)
@@ -12730,8 +13161,16 @@ fileprivate func rzfit_swift_value_dict_for_aviation_attitude( ptr : UnsafePoint
   let x : FIT_AVIATION_ATTITUDE_MESG = ptr.pointee
   if x.system_time != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = Double(x.system_time)
-    rv[ "system_time" ] = val
+    withUnsafeBytes(of: x.system_time) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "system_time[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.timestamp_ms != FIT_UINT16_INVALID  {
     let val : Double = Double(x.timestamp_ms)
@@ -12739,38 +13178,94 @@ fileprivate func rzfit_swift_value_dict_for_aviation_attitude( ptr : UnsafePoint
   }
   if x.pitch != FIT_SINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.pitch)/Double(10430.38))
-    rv[ "pitch" ] = val
+    withUnsafeBytes(of: x.pitch) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "pitch[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.roll != FIT_SINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.roll)/Double(10430.38))
-    rv[ "roll" ] = val
+    withUnsafeBytes(of: x.roll) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "roll[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.accel_lateral != FIT_SINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.accel_lateral)/Double(100))
-    rv[ "accel_lateral" ] = val
+    withUnsafeBytes(of: x.accel_lateral) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_lateral[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.accel_normal != FIT_SINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.accel_normal)/Double(100))
-    rv[ "accel_normal" ] = val
+    withUnsafeBytes(of: x.accel_normal) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_normal[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.turn_rate != FIT_SINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.turn_rate)/Double(1024))
-    rv[ "turn_rate" ] = val
+    withUnsafeBytes(of: x.turn_rate) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "turn_rate[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.track != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.track)/Double(10430.38))
-    rv[ "track" ] = val
+    withUnsafeBytes(of: x.track) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "track[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.attitude_stage_complete != FIT_UINT8_INVALID  {
     // Array[1]
-    let val : Double = Double(x.attitude_stage_complete)
-    rv[ "attitude_stage_complete" ] = val
+    withUnsafeBytes(of: x.attitude_stage_complete) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT8.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT8_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "attitude_stage_complete[\(idx)]" ] = val
+        }
+      }
+    }
   }
   return rv
 }
@@ -12921,13 +13416,16 @@ fileprivate func rzfit_swift_value_dict_for_developer_data_id( ptr : UnsafePoint
   let x : FIT_DEVELOPER_DATA_ID_MESG = ptr.pointee
   if x.developer_id.0 != FIT_BYTE_INVALID  {
     // Array[16]
-    let val : Double = Double(x.developer_id.0)
-    rv[ "developer_id" ] = val
-  }
-  if x.application_id.0 != FIT_BYTE_INVALID  {
-    // Array[16]
-    let val : Double = Double(x.application_id.0)
-    rv[ "application_id" ] = val
+    withUnsafeBytes(of: x.developer_id) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<16 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "developer_id[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.application_version != FIT_UINT32_INVALID  {
     let val : Double = Double(x.application_version)
@@ -13138,8 +13636,16 @@ fileprivate func rzfit_swift_value_dict_for_segment_point( ptr : UnsafePointer<F
   }
   if x.leader_time != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.leader_time)/Double(1000))
-    rv[ "leader_time" ] = val
+    withUnsafeBytes(of: x.leader_time) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "leader_time[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.message_index != FIT_UINT16_INVALID  {
     rv[ "message_index_value" ] = rzfit_swift_value_from_message_index(x.message_index)
@@ -13227,23 +13733,55 @@ fileprivate func rzfit_swift_value_dict_for_segment_lap( ptr : UnsafePointer<FIT
   }
   if x.time_in_hr_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_hr_zone)/Double(1000))
-    rv[ "time_in_hr_zone" ] = val
+    withUnsafeBytes(of: x.time_in_hr_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_hr_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_speed_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_speed_zone)/Double(1000))
-    rv[ "time_in_speed_zone" ] = val
+    withUnsafeBytes(of: x.time_in_speed_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_speed_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_cadence_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_cadence_zone)/Double(1000))
-    rv[ "time_in_cadence_zone" ] = val
+    withUnsafeBytes(of: x.time_in_cadence_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_cadence_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.time_in_power_zone != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time_in_power_zone)/Double(1000))
-    rv[ "time_in_power_zone" ] = val
+    withUnsafeBytes(of: x.time_in_power_zone) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time_in_power_zone[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.active_time != FIT_UINT32_INVALID  {
     let val : Double = (Double(x.active_time)/Double(1000))
@@ -13492,13 +14030,29 @@ fileprivate func rzfit_swift_value_dict_for_segment_file( ptr : UnsafePointer<FI
   }
   if x.leader_group_primary_key != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = Double(x.leader_group_primary_key)
-    rv[ "leader_group_primary_key" ] = val
+    withUnsafeBytes(of: x.leader_group_primary_key) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "leader_group_primary_key[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.leader_activity_id != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = Double(x.leader_activity_id)
-    rv[ "leader_activity_id" ] = val
+    withUnsafeBytes(of: x.leader_activity_id) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "leader_activity_id[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.message_index != FIT_UINT16_INVALID  {
     rv[ "message_index_value" ] = rzfit_swift_value_from_message_index(x.message_index)
@@ -14285,8 +14839,16 @@ fileprivate func rzfit_swift_value_dict_for_hr( ptr : UnsafePointer<FIT_HR_MESG>
   let x : FIT_HR_MESG = ptr.pointee
   if x.event_timestamp != FIT_UINT32_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.event_timestamp)/Double(1024))
-    rv[ "event_timestamp" ] = val
+    withUnsafeBytes(of: x.event_timestamp) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT32.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT32_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "event_timestamp[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.fractional_timestamp != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.fractional_timestamp)/Double(32768))
@@ -14298,13 +14860,29 @@ fileprivate func rzfit_swift_value_dict_for_hr( ptr : UnsafePointer<FIT_HR_MESG>
   }
   if x.filtered_bpm != FIT_UINT8_INVALID  {
     // Array[1]
-    let val : Double = Double(x.filtered_bpm)
-    rv[ "filtered_bpm" ] = val
+    withUnsafeBytes(of: x.filtered_bpm) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT8.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT8_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "filtered_bpm[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.event_timestamp_12 != FIT_BYTE_INVALID  {
     // Array[1]
-    let val : Double = Double(x.event_timestamp_12)
-    rv[ "event_timestamp_12" ] = val
+    withUnsafeBytes(of: x.event_timestamp_12) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "event_timestamp_12[\(idx)]" ] = val
+        }
+      }
+    }
   }
   return rv
 }
@@ -14320,27 +14898,101 @@ fileprivate func rzfit_swift_date_dict_for_hr( ptr : UnsafePointer<FIT_HR_MESG>)
   }
   return rv
 }
+fileprivate func rzfit_swift_value_dict_for_hsa_accelerometer_data( ptr : UnsafePointer<FIT_HSA_ACCELEROMETER_DATA_MESG>) -> [String:Double] {
+  var rv : [String:Double] = [:]
+  let x : FIT_HSA_ACCELEROMETER_DATA_MESG = ptr.pointee
+  if x.accel_x.0 != FIT_SINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.accel_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_x[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.accel_y.0 != FIT_SINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.accel_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_y[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.accel_z.0 != FIT_SINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.accel_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "accel_z[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  return rv
+}
+fileprivate func rzfit_swift_string_dict_for_hsa_accelerometer_data( ptr : UnsafePointer<FIT_HSA_ACCELEROMETER_DATA_MESG>) -> [String:String] {
+  return [:]
+}
+fileprivate func rzfit_swift_date_dict_for_hsa_accelerometer_data( ptr : UnsafePointer<FIT_HSA_ACCELEROMETER_DATA_MESG>) -> [String:Date] {
+  return [:]
+}
 fileprivate func rzfit_swift_value_dict_for_hsa_gyroscope_data( ptr : UnsafePointer<FIT_HSA_GYROSCOPE_DATA_MESG>) -> [String:Double] {
   var rv : [String:Double] = [:]
   let x : FIT_HSA_GYROSCOPE_DATA_MESG = ptr.pointee
+  if x.gyro_x.0 != FIT_SINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.gyro_x) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "gyro_x[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.gyro_y.0 != FIT_SINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.gyro_y) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "gyro_y[\(idx)]" ] = val
+        }
+      }
+    }
+  }
+  if x.gyro_z.0 != FIT_SINT16_INVALID  {
+    // Array[100]
+    withUnsafeBytes(of: x.gyro_z) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_SINT16.self)
+      for idx in 0..<100 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_SINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "gyro_z[\(idx)]" ] = val
+        }
+      }
+    }
+  }
   if x.timestamp_ms != FIT_UINT16_INVALID  {
     let val : Double = Double(x.timestamp_ms)
     rv[ "timestamp_ms" ] = val
-  }
-  if x.gyro_x != FIT_SINT16_INVALID  {
-    // Array[1]
-    let val : Double = (Double(x.gyro_x)/Double(28.57143))
-    rv[ "gyro_x" ] = val
-  }
-  if x.gyro_y != FIT_SINT16_INVALID  {
-    // Array[1]
-    let val : Double = (Double(x.gyro_y)/Double(28.57143))
-    rv[ "gyro_y" ] = val
-  }
-  if x.gyro_z != FIT_SINT16_INVALID  {
-    // Array[1]
-    let val : Double = (Double(x.gyro_z)/Double(28.57143))
-    rv[ "gyro_z" ] = val
   }
   return rv
 }
@@ -14361,8 +15013,16 @@ fileprivate func rzfit_swift_value_dict_for_ant_rx( ptr : UnsafePointer<FIT_ANT_
   let x : FIT_ANT_RX_MESG = ptr.pointee
   if x.data.0 != FIT_BYTE_INVALID  {
     // Array[8]
-    let val : Double = Double(x.data.0)
-    rv[ "data" ] = val
+    withUnsafeBytes(of: x.data) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<8 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "data[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.fractional_timestamp != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.fractional_timestamp)/Double(32768))
@@ -14374,8 +15034,16 @@ fileprivate func rzfit_swift_value_dict_for_ant_rx( ptr : UnsafePointer<FIT_ANT_
   }
   if x.mesg_data.0 != FIT_BYTE_INVALID  {
     // Array[9]
-    let val : Double = Double(x.mesg_data.0)
-    rv[ "mesg_data" ] = val
+    withUnsafeBytes(of: x.mesg_data) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<9 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "mesg_data[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.channel_number != FIT_UINT8_INVALID  {
     let val : Double = Double(x.channel_number)
@@ -14400,8 +15068,16 @@ fileprivate func rzfit_swift_value_dict_for_ant_tx( ptr : UnsafePointer<FIT_ANT_
   let x : FIT_ANT_TX_MESG = ptr.pointee
   if x.data.0 != FIT_BYTE_INVALID  {
     // Array[8]
-    let val : Double = Double(x.data.0)
-    rv[ "data" ] = val
+    withUnsafeBytes(of: x.data) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<8 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "data[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.fractional_timestamp != FIT_UINT16_INVALID  {
     let val : Double = (Double(x.fractional_timestamp)/Double(32768))
@@ -14413,8 +15089,16 @@ fileprivate func rzfit_swift_value_dict_for_ant_tx( ptr : UnsafePointer<FIT_ANT_
   }
   if x.mesg_data.0 != FIT_BYTE_INVALID  {
     // Array[9]
-    let val : Double = Double(x.mesg_data.0)
-    rv[ "mesg_data" ] = val
+    withUnsafeBytes(of: x.mesg_data) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_BYTE.self)
+      for idx in 0..<9 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_BYTE_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "mesg_data[\(idx)]" ] = val
+        }
+      }
+    }
   }
   if x.channel_number != FIT_UINT8_INVALID  {
     let val : Double = Double(x.channel_number)
@@ -14560,8 +15244,16 @@ fileprivate func rzfit_swift_value_dict_for_hrv( ptr : UnsafePointer<FIT_HRV_MES
   let x : FIT_HRV_MESG = ptr.pointee
   if x.time != FIT_UINT16_INVALID  {
     // Array[1]
-    let val : Double = (Double(x.time)/Double(1000))
-    rv[ "time" ] = val
+    withUnsafeBytes(of: x.time) { rawPtr in
+      let arrPtr = rawPtr.bindMemory(to: FIT_UINT16.self)
+      for idx in 0..<1 {
+        let arrayVal = arrPtr[idx]
+        if arrayVal != FIT_UINT16_INVALID {
+          let val : Double = Double(arrayVal)
+          rv[ "time[\(idx)]" ] = val
+        }
+      }
+    }
   }
   return rv
 }

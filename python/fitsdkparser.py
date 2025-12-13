@@ -610,11 +610,24 @@ class Field:
                 something_done = True
                 if self.is_array:
                     lines.append( prefix + '  // Array[{}]'.format( self.array_size ) )
-
-                formula = self.swift_expr_formula(ctx)
-                lines.extend( [ prefix + '  let val : Double = {}'.format( formula ),
-                                 prefix + '  rv[ "{}" ] = val'.format(self.name),
-                                 ] )
+                    # Generate loop code to extract all array elements with indexed field names
+                    lines.extend( [
+                        prefix + '  withUnsafeBytes(of: x.{}) {{ rawPtr in'.format(self.member),
+                        prefix + '    let arrPtr = rawPtr.bindMemory(to: {}.self)'.format(self.objc_base_type),
+                        prefix + '    for idx in 0..<{} {{'.format(self.array_size),
+                        prefix + '      let arrayVal = arrPtr[idx]',
+                        prefix + '      if arrayVal != {}_INVALID {{'.format(self.objc_base_type),
+                        prefix + '        let val : Double = Double(arrayVal)',
+                        prefix + '        rv[ "{}[\\(idx)]" ] = val'.format(self.name),
+                        prefix + '      }',
+                        prefix + '    }',
+                        prefix + '  }',
+                    ] )
+                else:
+                    formula = self.swift_expr_formula(ctx)
+                    lines.extend( [ prefix + '  let val : Double = {}'.format( formula ),
+                                     prefix + '  rv[ "{}" ] = val'.format(self.name),
+                                     ] )
             elif self.fit_type and self.fit_type.is_value():
                 something_done = True
                 lines.append( prefix + '  rv[ "{}_value" ] = {}(x.{})'.format(self.name, self.fit_type.swift_fname_to_value(), member ) )

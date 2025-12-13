@@ -753,38 +753,38 @@ typedef struct {
 
 typedef struct {
   FIT_UINT32 timestamp; // 
-  FIT_UINT16 sample_time_offset[1000]; // 
-  FIT_FLOAT32 calibrated_gyro_x[1]; // 
-  FIT_FLOAT32 calibrated_gyro_y[1]; // 
-  FIT_FLOAT32 calibrated_gyro_z[1]; // 
+  FIT_UINT16 sample_time_offset[100]; // 
+  FIT_UINT16 gyro_x[100]; // 
+  FIT_UINT16 gyro_y[100]; // 
+  FIT_UINT16 gyro_z[100]; // 
+  FIT_FLOAT32 calibrated_gyro_x[100]; // 
+  FIT_FLOAT32 calibrated_gyro_y[100]; // 
+  FIT_FLOAT32 calibrated_gyro_z[100]; // 
   FIT_UINT16 timestamp_ms; // 
-  FIT_UINT16 gyro_x[1]; // 
-  FIT_UINT16 gyro_y[1]; // 
-  FIT_UINT16 gyro_z[1]; // 
 } FIT_GYROSCOPE_DATA_MESG;
 
 typedef struct {
   FIT_UINT32 timestamp; // 
-  FIT_UINT16 sample_time_offset[1000]; // 
-  FIT_FLOAT32 calibrated_accel_x[1]; // 
-  FIT_FLOAT32 calibrated_accel_y[1]; // 
-  FIT_FLOAT32 calibrated_accel_z[1]; // 
+  FIT_UINT16 sample_time_offset[100]; // 
+  FIT_UINT16 accel_x[100]; // 
+  FIT_UINT16 accel_y[100]; // 
+  FIT_UINT16 accel_z[100]; // 
+  FIT_FLOAT32 calibrated_accel_x[100]; // 
+  FIT_FLOAT32 calibrated_accel_y[100]; // 
+  FIT_FLOAT32 calibrated_accel_z[100]; // 
   FIT_UINT16 timestamp_ms; // 
-  FIT_UINT16 accel_x[1]; // 
-  FIT_UINT16 accel_y[1]; // 
-  FIT_UINT16 accel_z[1]; // 
 } FIT_ACCELEROMETER_DATA_MESG;
 
 typedef struct {
   FIT_UINT32 timestamp; // 
-  FIT_UINT16 sample_time_offset[1000]; // 
-  FIT_FLOAT32 calibrated_mag_x[1]; // 
-  FIT_FLOAT32 calibrated_mag_y[1]; // 
-  FIT_FLOAT32 calibrated_mag_z[1]; // 
+  FIT_UINT16 sample_time_offset[100]; // 
+  FIT_UINT16 mag_x[100]; // 
+  FIT_UINT16 mag_y[100]; // 
+  FIT_UINT16 mag_z[100]; // 
+  FIT_FLOAT32 calibrated_mag_x[100]; // 
+  FIT_FLOAT32 calibrated_mag_y[100]; // 
+  FIT_FLOAT32 calibrated_mag_z[100]; // 
   FIT_UINT16 timestamp_ms; // 
-  FIT_UINT16 mag_x[1]; // 
-  FIT_UINT16 mag_y[1]; // 
-  FIT_UINT16 mag_z[1]; // 
 } FIT_MAGNETOMETER_DATA_MESG;
 
 typedef struct {
@@ -846,7 +846,6 @@ typedef struct {
 
 typedef struct {
   FIT_BYTE developer_id[16]; // 
-  FIT_BYTE application_id[16]; // 
   FIT_UINT32 application_version; // 
   FIT_UINT16 manufacturer_id; // manufacturer
   FIT_UINT8 developer_data_index; // 
@@ -1122,11 +1121,17 @@ typedef struct {
 } FIT_HR_MESG;
 
 typedef struct {
+  FIT_SINT16 accel_x[100]; // 
+  FIT_SINT16 accel_y[100]; // 
+  FIT_SINT16 accel_z[100]; // 
+} FIT_HSA_ACCELEROMETER_DATA_MESG;
+
+typedef struct {
   FIT_UINT32 timestamp; // 
+  FIT_SINT16 gyro_x[100]; // 
+  FIT_SINT16 gyro_y[100]; // 
+  FIT_SINT16 gyro_z[100]; // 
   FIT_UINT16 timestamp_ms; // 
-  FIT_SINT16 gyro_x[1]; // 
-  FIT_SINT16 gyro_y[1]; // 
-  FIT_SINT16 gyro_z[1]; // 
 } FIT_HSA_GYROSCOPE_DATA_MESG;
 
 typedef struct {

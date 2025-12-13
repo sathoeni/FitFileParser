@@ -1,10 +1,13 @@
 # Profile.xlsx Modifications
 
 **SDK Version**: 21.171
+**Last Updated**: 2025-12-13
 
 ## Summary
 
-This document tracks custom modifications made to `Profile.xlsx` beyond the standard FIT SDK distribution. These modifications are necessary to enable parsing of sensor data messages that would otherwise cause crashes or be inaccessible.
+This document tracks custom modifications made to `Profile.xlsx` beyond the standard FIT SDK distribution. These modifications are necessary to enable parsing of sensor data messages with proper array support for calibrated values and timestamps.
+
+**CRITICAL**: Array fields are now properly exposed as indexed fields (e.g., `calibrated_accel_x[0]`, `[1]`, `[2]`, etc.) allowing access to all 25+ values per message.
 
 ## Problem Fixed
 
@@ -61,10 +64,60 @@ Fields with examples added:
 Fields with examples added:
 - timestamp: `1`
 - timestamp_ms: `1`
-- sample_time_offset: `1000` (Note: This is an array field, value indicates array size)
-- gyro_x: `1`
-- gyro_y: `1`
-- gyro_z: `1`
+- sample_time_offset: `100` (Array field, example value = array size)
+- gyro_x: `100` (Array of raw gyroscope X values)
+- gyro_y: `100` (Array of raw gyroscope Y values)
+- gyro_z: `100` (Array of raw gyroscope Z values)
+
+## Array Field Modifications (2025-12-13)
+
+**Critical Change**: Modified sensor message fields to properly support arrays with up to 100 elements.
+
+### Array Size Configuration
+
+Set the "Array" column to `[100]` and "Example" column to `100` for:
+
+**Accelerometer Data (165)**:
+- sample_time_offset: `[100]`, example: `100`
+- accel_x/y/z: `[100]`, example: `100`
+- calibrated_accel_x/y/z: `[100]`, example: `100`
+
+**Gyroscope Data (164)**:
+- sample_time_offset: `[100]`, example: `100`
+- gyro_x/y/z: `[100]`, example: `100`
+- calibrated_gyro_x/y/z: `[100]`, example: `100`
+
+**Magnetometer Data (208)**:
+- sample_time_offset: `[100]`, example: `100`
+- mag_x/y/z: `[100]`, example: `100`
+- calibrated_mag_x/y/z: `[100]`, example: `100`
+
+### Code Generator Modifications
+
+Modified `python/fitsdkparser.py` (lines 611-625) to generate array handling code:
+
+```python
+if self.is_array:
+    # Generate loop code to extract all array elements with indexed field names
+    lines.extend( [
+        prefix + '  withUnsafeBytes(of: x.{}) {{ rawPtr in'.format(self.member),
+        prefix + '    let arrPtr = rawPtr.bindMemory(to: {}.self)'.format(self.objc_base_type),
+        prefix + '    for idx in 0..<{} {{'.format(self.array_size),
+        prefix + '      let arrayVal = arrPtr[idx]',
+        prefix + '      if arrayVal != {}_INVALID {{'.format(self.objc_base_type),
+        prefix + '        let val : Double = Double(arrayVal)',
+        prefix + '        rv[ "{}[\\(idx)]" ] = val'.format(self.name),
+        prefix + '      }',
+        prefix + '    }',
+        prefix + '  }',
+    ] )
+```
+
+This generates Swift code that:
+1. Uses `withUnsafeBytes` to access C array memory
+2. Loops through all array elements (0..<100)
+3. Creates indexed field names like `calibrated_accel_x[0]`, `[1]`, `[2]`, etc.
+4. Filters out invalid values (NaN for FLOAT32, max values for integer types)
 
 ## When Updating FIT SDK
 

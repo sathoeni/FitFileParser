@@ -1072,14 +1072,14 @@ static const FIT_GYROSCOPE_DATA_MESG_DEF gyroscope_data_mesg_def = {
   9,
   {
     /* timestamp */253,        (sizeof(FIT_UINT32)*1),    FIT_BASE_TYPE_UINT32,     
-    /* sample_time_offset */1, (sizeof(FIT_UINT16)*1000), FIT_BASE_TYPE_UINT16,     
-    /* calibrated_gyro_x */5,  (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
-    /* calibrated_gyro_y */6,  (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
-    /* calibrated_gyro_z */7,  (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
+    /* sample_time_offset */1, (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* gyro_x */2,             (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* gyro_y */3,             (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* gyro_z */4,             (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* calibrated_gyro_x */5,  (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
+    /* calibrated_gyro_y */6,  (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
+    /* calibrated_gyro_z */7,  (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
     /* timestamp_ms */0,       (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* gyro_x */2,             (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* gyro_y */3,             (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* gyro_z */4,             (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
   }
 };
 typedef struct {
@@ -1097,14 +1097,14 @@ static const FIT_ACCELEROMETER_DATA_MESG_DEF accelerometer_data_mesg_def = {
   9,
   {
     /* timestamp */253,        (sizeof(FIT_UINT32)*1),    FIT_BASE_TYPE_UINT32,     
-    /* sample_time_offset */1, (sizeof(FIT_UINT16)*1000), FIT_BASE_TYPE_UINT16,     
-    /* calibrated_accel_x */5, (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
-    /* calibrated_accel_y */6, (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
-    /* calibrated_accel_z */7, (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
+    /* sample_time_offset */1, (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* accel_x */2,            (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* accel_y */3,            (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* accel_z */4,            (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* calibrated_accel_x */5, (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
+    /* calibrated_accel_y */6, (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
+    /* calibrated_accel_z */7, (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
     /* timestamp_ms */0,       (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* accel_x */2,            (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* accel_y */3,            (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* accel_z */4,            (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
   }
 };
 typedef struct {
@@ -1122,14 +1122,14 @@ static const FIT_MAGNETOMETER_DATA_MESG_DEF magnetometer_data_mesg_def = {
   9,
   {
     /* timestamp */253,        (sizeof(FIT_UINT32)*1),    FIT_BASE_TYPE_UINT32,     
-    /* sample_time_offset */1, (sizeof(FIT_UINT16)*1000), FIT_BASE_TYPE_UINT16,     
-    /* calibrated_mag_x */5,   (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
-    /* calibrated_mag_y */6,   (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
-    /* calibrated_mag_z */7,   (sizeof(FIT_FLOAT32)*1),   FIT_BASE_TYPE_FLOAT32,    
+    /* sample_time_offset */1, (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* mag_x */2,              (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* mag_y */3,              (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* mag_z */4,              (sizeof(FIT_UINT16)*100),  FIT_BASE_TYPE_UINT16,     
+    /* calibrated_mag_x */5,   (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
+    /* calibrated_mag_y */6,   (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
+    /* calibrated_mag_z */7,   (sizeof(FIT_FLOAT32)*100), FIT_BASE_TYPE_FLOAT32,    
     /* timestamp_ms */0,       (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* mag_x */2,              (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* mag_y */3,              (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
-    /* mag_z */4,              (sizeof(FIT_UINT16)*1),    FIT_BASE_TYPE_UINT16,     
   }
 };
 typedef struct {
@@ -1285,17 +1285,16 @@ typedef struct {
   FIT_UINT8 arch;
   FIT_UINT16 global_mesg_num;
   FIT_UINT8 num_fields;
-  FIT_UINT8 fields[FIT_FIELD_DEF_SIZE *  5];
+  FIT_UINT8 fields[FIT_FIELD_DEF_SIZE *  4];
 } FIT_DEVELOPER_DATA_ID_MESG_DEF;
 
 static const FIT_DEVELOPER_DATA_ID_MESG_DEF developer_data_id_mesg_def = {
   0, // reserved_1
   FIT_ARCH_ENDIAN, // arch,
   /* developer_data_id */207, // mesg_num,
-  5,
+  4,
   {
     /* developer_id */0,         (sizeof(FIT_BYTE)*16),  FIT_BASE_TYPE_BYTE,    
-    /* application_id */1,       (sizeof(FIT_BYTE)*16),  FIT_BASE_TYPE_BYTE,    
     /* application_version */4,  (sizeof(FIT_UINT32)*1), FIT_BASE_TYPE_UINT32,  
     /* manufacturer_id */2,      (sizeof(FIT_UINT16)*1), FIT_BASE_TYPE_UINT16,  
     /* developer_data_index */3, (sizeof(FIT_UINT8)*1),  FIT_BASE_TYPE_UINT8,   
@@ -1822,6 +1821,25 @@ typedef struct {
   FIT_UINT8 arch;
   FIT_UINT16 global_mesg_num;
   FIT_UINT8 num_fields;
+  FIT_UINT8 fields[FIT_FIELD_DEF_SIZE *  3];
+} FIT_HSA_ACCELEROMETER_DATA_MESG_DEF;
+
+static const FIT_HSA_ACCELEROMETER_DATA_MESG_DEF hsa_accelerometer_data_mesg_def = {
+  0, // reserved_1
+  FIT_ARCH_ENDIAN, // arch,
+  /* hsa_accelerometer_data */302, // mesg_num,
+  3,
+  {
+    /* accel_x */2, (sizeof(FIT_SINT16)*100), FIT_BASE_TYPE_SINT16,    
+    /* accel_y */3, (sizeof(FIT_SINT16)*100), FIT_BASE_TYPE_SINT16,    
+    /* accel_z */4, (sizeof(FIT_SINT16)*100), FIT_BASE_TYPE_SINT16,    
+  }
+};
+typedef struct {
+  FIT_UINT8 reserved_1;
+  FIT_UINT8 arch;
+  FIT_UINT16 global_mesg_num;
+  FIT_UINT8 num_fields;
   FIT_UINT8 fields[FIT_FIELD_DEF_SIZE *  5];
 } FIT_HSA_GYROSCOPE_DATA_MESG_DEF;
 
@@ -1831,11 +1849,11 @@ static const FIT_HSA_GYROSCOPE_DATA_MESG_DEF hsa_gyroscope_data_mesg_def = {
   /* hsa_gyroscope_data */376, // mesg_num,
   5,
   {
-    /* timestamp */253,  (sizeof(FIT_UINT32)*1), FIT_BASE_TYPE_UINT32,  
-    /* timestamp_ms */0, (sizeof(FIT_UINT16)*1), FIT_BASE_TYPE_UINT16,  
-    /* gyro_x */2,       (sizeof(FIT_SINT16)*1), FIT_BASE_TYPE_SINT16,  
-    /* gyro_y */3,       (sizeof(FIT_SINT16)*1), FIT_BASE_TYPE_SINT16,  
-    /* gyro_z */4,       (sizeof(FIT_SINT16)*1), FIT_BASE_TYPE_SINT16,  
+    /* timestamp */253,  (sizeof(FIT_UINT32)*1),   FIT_BASE_TYPE_UINT32,    
+    /* gyro_x */2,       (sizeof(FIT_SINT16)*100), FIT_BASE_TYPE_SINT16,    
+    /* gyro_y */3,       (sizeof(FIT_SINT16)*100), FIT_BASE_TYPE_SINT16,    
+    /* gyro_z */4,       (sizeof(FIT_SINT16)*100), FIT_BASE_TYPE_SINT16,    
+    /* timestamp_ms */0, (sizeof(FIT_UINT16)*1),   FIT_BASE_TYPE_UINT16,    
   }
 };
 typedef struct {
@@ -1968,7 +1986,7 @@ static const FIT_HRV_MESG_DEF hrv_mesg_def = {
     /* time */0, (sizeof(FIT_UINT16)*1), FIT_BASE_TYPE_UINT16,
   }
 };
-FIT_UINT8 reference_mesg_defs_size = 72;
+FIT_UINT8 reference_mesg_defs_size = 73;
 FIT_CONST_MESG_DEF_PTR reference_mesg_defs[] = {
   (FIT_CONST_MESG_DEF_PTR) &file_id_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &file_creator_mesg_def,
@@ -2035,6 +2053,7 @@ FIT_CONST_MESG_DEF_PTR reference_mesg_defs[] = {
   (FIT_CONST_MESG_DEF_PTR) &monitoring_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &monitoring_hr_data_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &hr_mesg_def,
+  (FIT_CONST_MESG_DEF_PTR) &hsa_accelerometer_data_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &hsa_gyroscope_data_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &ant_rx_mesg_def,
   (FIT_CONST_MESG_DEF_PTR) &ant_tx_mesg_def,
